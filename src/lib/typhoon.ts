@@ -1,4 +1,4 @@
-export type TyphoonModel = 'typhoon-v2.1-12b-instruct' | 'typhoon-v2-r1-70b-preview';
+export type TyphoonModel = 'typhoon-v2.1-12b-instruct';
 
 export interface TyphoonMessage {
     role: 'system' | 'user' | 'assistant';

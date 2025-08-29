@@ -183,7 +183,7 @@ Please analyze the player's solution and include this JSON format in your respon
             ];
 
             // Get the response from the LLM
-            const response = await sendMessage(messages, 'typhoon-v2-r1-70b-preview');
+            const response = await sendMessage(messages, 'typhoon-v2.1-12b-instruct');
 
             // Extract JSON solution
             const jsonMatch = response.match(/```json\n([\s\S]*?)\n```/) ||

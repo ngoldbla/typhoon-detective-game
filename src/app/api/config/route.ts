@@ -11,7 +11,7 @@ export async function GET(_request: NextRequest) {
         },
         models: {
             default: 'typhoon-v2.1-12b-instruct',
-            advanced: 'typhoon-v2-r1-70b-preview'
+            advanced: 'typhoon-v2.1-12b-instruct'
         },
         maxGenerationLength: 1000
     };
