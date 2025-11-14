@@ -24,15 +24,15 @@ const bangers = Bangers({
 });
 
 export const metadata: Metadata = {
-  title: "Typhoon Detective Game | LLM-Powered Interactive Experience",
-  description: "Experience the power of Typhoon AI in this interactive detective game. Solve mysteries with dynamic AI-generated cases, intelligent clue analysis, and realistic suspect interviews. A showcase of Typhoon's AI capabilities.",
-  keywords: "Typhoon AI, detective game, LLM, language model, AI game, interactive fiction, Typhoon demo, AI demo, AI-powered, text generation",
-  authors: [{ name: "Typhoon AI" }],
-  creator: "Typhoon AI",
-  publisher: "Typhoon AI",
-  applicationName: "Typhoon Detective Game",
+  title: "Emerson's Detective Game | LLM-Powered Interactive Experience",
+  description: "Experience the power of Emerson's AI in this interactive detective game. Solve mysteries with dynamic AI-generated cases, intelligent clue analysis, and realistic suspect interviews. A showcase of AI capabilities.",
+  keywords: "AI, detective game, LLM, language model, AI game, interactive fiction, AI demo, AI-powered, text generation",
+  authors: [{ name: "Emerson's AI" }],
+  creator: "Emerson's AI",
+  publisher: "Emerson's AI",
+  applicationName: "Emerson's Detective Game",
   generator: "Next.js",
-  metadataBase: new URL("https://detective.apps.opentyphoon.ai"),
+  metadataBase: new URL("https://detective.emerson.ai"),
   alternates: {
     canonical: "/",
     languages: {
@@ -41,16 +41,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Typhoon Detective Game | LLM-Powered Interactive Experience",
-    description: "Experience the power of Typhoon AI in this interactive detective game. Solve mysteries with AI-generated cases, intelligent clue analysis, and realistic suspect interviews.",
-    url: "https://detective.apps.opentyphoon.ai",
-    siteName: "Typhoon Detective Game",
+    title: "Emerson's Detective Game | LLM-Powered Interactive Experience",
+    description: "Experience the power of Emerson's AI in this interactive detective game. Solve mysteries with AI-generated cases, intelligent clue analysis, and realistic suspect interviews.",
+    url: "https://detective.emerson.ai",
+    siteName: "Emerson's Detective Game",
     images: [
       {
         url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Typhoon Detective Game - Powered by Typhoon AI",
+        alt: "Emerson's Detective Game - Powered by AI",
       },
     ],
     locale: "en_US",
@@ -58,11 +58,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Typhoon Detective Game | AI-Powered Detective Experience",
-    description: "Solve mysteries with AI-generated cases, intelligent clue analysis, and realistic suspect interviews. A showcase of Typhoon's AI capabilities.",
+    title: "Emerson's Detective Game | AI-Powered Detective Experience",
+    description: "Solve mysteries with AI-generated cases, intelligent clue analysis, and realistic suspect interviews. A showcase of AI capabilities.",
     images: ["/og.jpg"],
-    creator: "@TyphoonAI",
-    site: "@TyphoonAI",
+    creator: "@EmersonAI",
+    site: "@EmersonAI",
   },
   viewport: {
     width: "device-width",
@@ -106,9 +106,9 @@ export default function RootLayout({
             {
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              "name": "Typhoon Detective Game",
+              "name": "Emerson's Detective Game",
               "applicationCategory": "Game",
-              "description": "An interactive detective game powered by Typhoon AI that showcases the capabilities of large language models in creating dynamic gaming experiences.",
+              "description": "An interactive detective game powered by Emerson's AI that showcases the capabilities of large language models in creating dynamic gaming experiences.",
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -116,11 +116,11 @@ export default function RootLayout({
               },
               "publisher": {
                 "@type": "Organization",
-                "name": "Typhoon AI",
-                "url": "https://opentyphoon.ai"
+                "name": "Emerson's AI",
+                "url": "https://emerson.ai"
               },
               "operatingSystem": "Web browser",
-              "url": "https://detective.apps.opentyphoon.ai",
+              "url": "https://detective.emerson.ai",
               "softwareVersion": "1.0.0",
               "screenshot": "/og.jpg",
               "featureList": [

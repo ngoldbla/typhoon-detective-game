@@ -228,21 +228,17 @@ export default function Layout({ children, title }: { children: React.ReactNode,
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         <div>
                             <a
-                                href="https://opentyphoon.ai"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="#"
                                 className="text-purple-500 hover:text-purple-400 font-medium transition-colors"
-                                data-gtm-id="footer-typhoon-link"
+                                data-gtm-id="footer-ai-link"
                             >
-                                #BuiltWithTyphoon
+                                #BuiltWithEmersonsAI
                             </a>
                         </div>
 
                         <div>
                             <a
-                                href="https://opentyphoon.ai/tac"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="#"
                                 className="text-surface-300 hover:text-white transition-colors text-sm"
                                 data-gtm-id="footer-terms-link"
                             >
@@ -282,9 +278,7 @@ export default function Layout({ children, title }: { children: React.ReactNode,
                                 <SiHuggingface className="w-5 h-5" />
                             </a>
                             <a
-                                href="https://x.com/opentyphoon"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="#"
                                 className="text-surface-300 hover:text-white transition-colors"
                                 aria-label="X (Twitter)"
                                 data-gtm-id="social-twitter"

@@ -16,7 +16,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const translations: Record<Language, Record<string, string>> = {
     en: {
         // Common
-        'app.title': 'Typhoon Detective',
+        'app.title': 'Emerson\'s Detective',
         'app.subtitle': 'Solve the case!',
         'app.loading': 'Loading...',
         'app.error': 'An error occurred',
@@ -83,7 +83,7 @@ const translations: Record<Language, Record<string, string>> = {
         'howToPlay.deduction.title': 'Making Your Deduction',
         'howToPlay.tips.title': 'Tips for Success',
         
-        'howToPlay.basics.intro': 'Welcome to Typhoon Detective Game! This is an interactive detective game where you\'ll solve mysteries by gathering clues, interviewing suspects, and making deductions.',
+        'howToPlay.basics.intro': 'Welcome to Emerson\'s Detective Game! This is an interactive detective game where you\'ll solve mysteries by gathering clues, interviewing suspects, and making deductions.',
         'howToPlay.basics.item1': 'Select a case from the Cases page',
         'howToPlay.basics.item2': 'Read the case briefing carefully',
         'howToPlay.basics.item3': 'Gather and analyze clues throughout the investigation',
@@ -117,18 +117,18 @@ const translations: Record<Language, Record<string, string>> = {
 
         // How It Works
         'howItWorks.title': 'How It Works',
-        'howItWorks.intro': 'Typhoon Detective Game uses advanced AI technology to create an immersive detective experience. Learn about the underlying technology and algorithms that power the game.',
-        
-        'howItWorks.typhoonLLM.title': 'Typhoon LLM Technology',
-        'howItWorks.typhoonLLM.intro': 'The game is powered by Typhoon, a powerful large language model (LLM) designed for complex reasoning and creative content generation.',
-        'howItWorks.typhoonLLM.item1': 'Typhoon LLM handles natural language understanding and generation throughout the game',
+        'howItWorks.intro': 'Emerson\'s Detective Game uses advanced AI technology to create an immersive detective experience. Learn about the underlying technology and algorithms that power the game.',
+
+        'howItWorks.typhoonLLM.title': 'AI Technology',
+        'howItWorks.typhoonLLM.intro': 'The game is powered by Emerson\'s AI, a powerful large language model (LLM) designed for complex reasoning and creative content generation.',
+        'howItWorks.typhoonLLM.item1': 'Emerson\'s AI handles natural language understanding and generation throughout the game',
         'howItWorks.typhoonLLM.item2': 'The model can process context-rich information to create coherent narratives',
         'howItWorks.typhoonLLM.item3': 'It utilizes advanced prompting techniques to maintain consistent game elements',
         'howItWorks.typhoonLLM.item4': 'The system uses different model variants optimized for different tasks',
-        
+
         'howItWorks.caseGeneration.title': 'Dynamic Case Generation',
         'howItWorks.caseGeneration.intro': 'Each case in the game is uniquely generated using AI algorithms, creating endless possibilities for investigation.',
-        'howItWorks.caseGeneration.item1': 'Cases are created by providing structured prompts to the Typhoon LLM',
+        'howItWorks.caseGeneration.item1': 'Cases are created by providing structured prompts to Emerson\'s AI',
         'howItWorks.caseGeneration.item2': 'The system ensures logical consistency between clues, suspects, and the solution',
         'howItWorks.caseGeneration.item3': 'Case parameters like theme, location, and difficulty level influence the generation process',
         'howItWorks.caseGeneration.item4': 'The AI generates case details, clue descriptions, suspect profiles, and a coherent solution',
@@ -360,16 +360,16 @@ const translations: Record<Language, Record<string, string>> = {
         'howItWorks.title': 'ระบบการทำงาน',
         'howItWorks.intro': 'เกมนักสืบไต้ฝุ่นใช้เทคโนโลยี AI ขั้นสูงเพื่อสร้างประสบการณ์การสืบสวนที่สมจริง เรียนรู้เกี่ยวกับเทคโนโลยีและอัลกอริทึมที่ขับเคลื่อนเกมนี้',
         
-        'howItWorks.typhoonLLM.title': 'เทคโนโลยี Typhoon LLM',
-        'howItWorks.typhoonLLM.intro': 'เกมนี้ขับเคลื่อนโดย Typhoon ซึ่งเป็นโมเดลภาษาขนาดใหญ่ (LLM) ที่ทรงพลังและถูกออกแบบมาสำหรับการใช้เหตุผลที่ซับซ้อนและการสร้างเนื้อหาเชิงสร้างสรรค์',
-        'howItWorks.typhoonLLM.item1': 'Typhoon LLM จัดการการเข้าใจและสร้างภาษาธรรมชาติตลอดทั้งเกม',
+        'howItWorks.typhoonLLM.title': 'เทคโนโลยี AI',
+        'howItWorks.typhoonLLM.intro': 'เกมนี้ขับเคลื่อนโดย Emerson\'s AI ซึ่งเป็นโมเดลภาษาขนาดใหญ่ (LLM) ที่ทรงพลังและถูกออกแบบมาสำหรับการใช้เหตุผลที่ซับซ้อนและการสร้างเนื้อหาเชิงสร้างสรรค์',
+        'howItWorks.typhoonLLM.item1': 'Emerson\'s AI จัดการการเข้าใจและสร้างภาษาธรรมชาติตลอดทั้งเกม',
         'howItWorks.typhoonLLM.item2': 'โมเดลสามารถประมวลผลข้อมูลที่มีบริบทซับซ้อนเพื่อสร้างเรื่องราวที่ต่อเนื่อง',
         'howItWorks.typhoonLLM.item3': 'ใช้เทคนิคการกำหนดคำสั่งขั้นสูงเพื่อรักษาองค์ประกอบของเกมให้สอดคล้องกัน',
         'howItWorks.typhoonLLM.item4': 'ระบบใช้รุ่นโมเดลที่แตกต่างกันซึ่งเหมาะสมกับงานที่แตกต่างกัน',
-        
+
         'howItWorks.caseGeneration.title': 'การสร้างคดีแบบไดนามิก',
         'howItWorks.caseGeneration.intro': 'คดีแต่ละคดีในเกมถูกสร้างขึ้นโดยเฉพาะด้วยอัลกอริทึม AI สร้างความเป็นไปได้ในการสืบสวนที่ไม่สิ้นสุด',
-        'howItWorks.caseGeneration.item1': 'คดีถูกสร้างโดยการให้คำสั่งที่มีโครงสร้างกับ Typhoon LLM',
+        'howItWorks.caseGeneration.item1': 'คดีถูกสร้างโดยการให้คำสั่งที่มีโครงสร้างกับ Emerson\'s AI',
         'howItWorks.caseGeneration.item2': 'ระบบรับรองความสอดคล้องเชิงตรรกะระหว่างหลักฐาน ผู้ต้องสงสัย และคำตอบ',
         'howItWorks.caseGeneration.item3': 'พารามิเตอร์ของคดี เช่น ธีม สถานที่ และระดับความยาก มีอิทธิพลต่อกระบวนการสร้าง',
         'howItWorks.caseGeneration.item4': 'AI สร้างรายละเอียดของคดี คำอธิบายหลักฐาน โปรไฟล์ผู้ต้องสงสัย และคำตอบที่สอดคล้องกัน',

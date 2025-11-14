@@ -21,7 +21,7 @@ export default function HowItWorks() {
         </p>
 
         <p className="mb-8 text-md">
-          This game showcases the capabilities of <a href="https://opentyphoon.ai" target="_blank" rel="noopener noreferrer" className="text-[var(--borderlands-yellow)] hover:underline">Typhoon AI</a> in creating interactive, dynamic gaming experiences through state-of-the-art large language models.
+          This game showcases the capabilities of Emerson's AI in creating interactive, dynamic gaming experiences through state-of-the-art large language models.
         </p>
 
         <AIDisclaimer className="mb-8" />
@@ -46,9 +46,7 @@ export default function HowItWorks() {
               </ul>
               <div className="flex flex-col justify-center items-end">
                 <a
-                  href="https://opentyphoon.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#"
                   className="text-[var(--borderlands-yellow)] hover:text-[var(--borderlands-orange)] font-bold flex items-center mt-4"
                 >
                   Learn More <FaArrowRight className="ml-2" />
@@ -132,10 +130,10 @@ export default function HowItWorks() {
 
         <div className="mt-12 p-6 bg-surface-800/80 rounded-lg border border-surface-700">
           <h2 className="text-xl font-bold comic-text text-[var(--borderlands-yellow)] mb-4">
-            About Typhoon AI
+            About Emerson's AI
           </h2>
           <p className="mb-4">
-            Typhoon AI offers powerful language models optimized for a wide range of applications. This game demonstrates just one example of how Typhoon's models can create engaging interactive experiences.
+            Emerson's AI offers powerful language models optimized for a wide range of applications. This game demonstrates just one example of how AI models can create engaging interactive experiences.
           </p>
           <p className="mb-4">
             This demo uses AI language models for:
@@ -148,12 +146,10 @@ export default function HowItWorks() {
           </ul>
           <div className="text-center">
             <a
-              href="https://opentyphoon.ai"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
               className="inline-block px-6 py-3 bg-[var(--borderlands-yellow)] text-black font-bold rounded-md hover:bg-[var(--borderlands-orange)] transition-colors"
             >
-              Explore Typhoon AI
+              Explore Emerson's AI
             </a>
           </div>
         </div>

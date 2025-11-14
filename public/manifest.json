@@ -1,7 +1,7 @@
 {
-    "name": "Typhoon Detective Game",
+    "name": "Emerson's Detective Game",
     "short_name": "Detective Game",
-    "description": "An interactive detective game powered by Typhoon AI that showcases the capabilities of large language models.",
+    "description": "An interactive detective game powered by Emerson's AI that showcases the capabilities of large language models.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#111827",
@@ -27,12 +27,7 @@
         "games",
         "entertainment"
     ],
-    "related_applications": [
-        {
-            "platform": "web",
-            "url": "https://opentyphoon.ai"
-        }
-    ],
+    "related_applications": [],
     "shortcuts": [
         {
             "name": "New Case",

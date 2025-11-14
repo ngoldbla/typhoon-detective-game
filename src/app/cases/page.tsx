@@ -48,16 +48,16 @@ export default function CasesPage() {
                     </Button>
                 </div>
 
-                {/* Typhoon AI Info Box */}
+                {/* AI Info Box */}
                 <div className="mb-6 p-4 bg-surface-800 border border-surface-700 rounded-lg">
                     <div className="flex items-start">
                         <FaRobot className="text-[var(--borderlands-yellow)] mt-1 mr-3 flex-shrink-0" size={20} />
                         <div>
                             <h2 className="text-lg font-bold text-[var(--borderlands-yellow)] mb-2">
-                                Typhoon AI-Generated Cases
+                                AI-Generated Cases
                             </h2>
                             <p className="text-sm mb-2">
-                                Each case in this detective game is dynamically generated using Typhoon AI's language models.
+                                Each case in this detective game is dynamically generated using Emerson's AI language models.
                                 Get unique storylines, characters, and mysteries each time you create a new case.
                             </p>
                             <div className="flex space-x-4 mt-3">
