@@ -107,7 +107,7 @@ Respond in a structured JSON format that can be parsed by JavaScript.`;
     // Use the standard model for suspect analysis
     const response = await fetchTyphoonCompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined, // Use default model from environment
         0.7,
         2048
     );
@@ -196,7 +196,7 @@ Additional information:
 
     const response = await fetchTyphoonCompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined, // Use default model from environment
         0.7,
         2048
     );

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const DEFAULT_MODEL = process.env.LLM_MODEL || 'typhoon-v2.1-12b-instruct';
+
 export async function GET(_request: NextRequest) {
     // Basic config that can be exposed to the client
     const config = {
@@ -10,8 +12,8 @@ export async function GET(_request: NextRequest) {
             debugMode: process.env.NODE_ENV === 'development'
         },
         models: {
-            default: 'typhoon-v2.1-12b-instruct',
-            advanced: 'typhoon-v2.1-12b-instruct'
+            default: DEFAULT_MODEL,
+            advanced: DEFAULT_MODEL
         },
         maxGenerationLength: 1000
     };

@@ -119,7 +119,7 @@ Respond in a structured JSON format that can be parsed by JavaScript, including 
     // Use the standard model for solution analysis
     const response = await fetchTyphoonCompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined, // Use default model from environment
         0.7,
         2048
     );

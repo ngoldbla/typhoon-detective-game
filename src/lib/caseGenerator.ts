@@ -123,7 +123,7 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
                 },
                 body: JSON.stringify({
                     messages,
-                    model: 'typhoon-v2.1-12b-instruct',
+                    // model parameter omitted to use default from environment
                     temperature: 0.7,
                     max_tokens: 8192
                 }),
@@ -141,7 +141,7 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
             console.log("Using server-side direct API call for case generation");
             response = await fetchTyphoonCompletion(
                 messages,
-                'typhoon-v2.1-12b-instruct',
+                undefined, // Use default model from environment
                 0.7,
                 8192
             );

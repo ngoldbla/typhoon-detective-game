@@ -40,10 +40,7 @@ This project is part of [Typhoon Application Week](https://apps.opentyphoon.ai),
    ```
 
 3. Set up environment variables:
-   - Copy `.env.example` to `.env.local` and add your Typhoon API key:
-   ```
-   TYPHOON_API_KEY=your_api_key_here
-   ```
+   - Copy `.env.example` to `.env.local` and configure your LLM settings (see [LLM Configuration](#llm-configuration) below)
 
 4. Run the development server:
    ```bash
@@ -51,6 +48,83 @@ This project is part of [Typhoon Application Week](https://apps.opentyphoon.ai),
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## LLM Configuration
+
+This game now supports any OpenAI-compatible LLM provider! You can use Typhoon, OpenAI, local models via Ollama, or any other compatible API.
+
+### Configuration Options
+
+Create a `.env.local` file with the following variables:
+
+```bash
+# API Key (required for most providers)
+LLM_API_KEY=your_api_key_here
+
+# API Endpoint (optional - defaults to Typhoon)
+# Default: https://api.opentyphoon.ai/v1/chat/completions
+LLM_API_ENDPOINT=https://api.opentyphoon.ai/v1/chat/completions
+
+# Model Name (optional - defaults to typhoon-v2.1-12b-instruct)
+LLM_MODEL=typhoon-v2.1-12b-instruct
+```
+
+### Provider Examples
+
+#### Typhoon (Default)
+```bash
+LLM_API_KEY=your_typhoon_api_key
+LLM_API_ENDPOINT=https://api.opentyphoon.ai/v1/chat/completions
+LLM_MODEL=typhoon-v2.1-12b-instruct
+```
+
+#### OpenAI
+```bash
+LLM_API_KEY=your_openai_api_key
+LLM_API_ENDPOINT=https://api.openai.com/v1/chat/completions
+LLM_MODEL=gpt-4o
+```
+
+#### Ollama (Local)
+```bash
+# No API key needed for local Ollama
+LLM_API_ENDPOINT=http://localhost:11434/v1/chat/completions
+LLM_MODEL=llama3.1
+```
+
+#### LM Studio (Local)
+```bash
+# No API key needed for local LM Studio
+LLM_API_ENDPOINT=http://localhost:1234/v1/chat/completions
+LLM_MODEL=your-model-name
+```
+
+#### Other OpenAI-Compatible APIs
+Any provider with an OpenAI-compatible endpoint should work. Just configure:
+- `LLM_API_KEY`: Your API key
+- `LLM_API_ENDPOINT`: The `/v1/chat/completions` endpoint
+- `LLM_MODEL`: The model identifier
+
+### Legacy Configuration
+
+For backward compatibility, you can still use `TYPHOON_API_KEY` instead of `LLM_API_KEY`:
+```bash
+TYPHOON_API_KEY=your_api_key_here
+```
+
+### Recommended Models
+
+For the best experience, use models with:
+- Strong reasoning capabilities
+- Good JSON output formatting
+- Context window of at least 4K tokens
+- Support for system prompts
+
+Tested models:
+- ✅ typhoon-v2.1-12b-instruct
+- ✅ gpt-4o, gpt-4-turbo
+- ✅ claude-3-5-sonnet (via proxy)
+- ✅ llama3.1 8B+ (via Ollama)
 
 ## License
 
