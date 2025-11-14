@@ -10,7 +10,7 @@ import AIDisclaimer from '@/components/AIDisclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useGame } from '@/contexts/GameContext';
 import { useTyphoon } from '@/hooks/useTyphoon';
-import { TyphoonMessage } from '@/lib/typhoon';
+import { OpenAIMessage } from '@/lib/typhoon';
 
 interface SuspectPageProps {
     params: Promise<{
@@ -148,7 +148,7 @@ Alibi: ${suspect.alibi}
 
 Answer as the suspect would, using natural language and appropriate demeanor. Maintain mystery where appropriate.`;
 
-            const messages: TyphoonMessage[] = [
+            const messages: OpenAIMessage[] = [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: question }
             ];
