@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Configurable values with defaults
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
-const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4o';
+const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-5';
 
 export async function POST(request: NextRequest) {
     try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         // Skip model validation when using custom base URLs, as they may support different models
         // Only validate for standard OpenAI endpoint
         if (OPENAI_BASE_URL === 'https://api.openai.com/v1') {
-            const validModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'];
+            const validModels = ['gpt-5', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'];
             if (!validModels.includes(model)) {
                 console.error('API route error: Invalid model', model);
                 return NextResponse.json(
