@@ -9,7 +9,7 @@ import AIDisclaimer from '@/components/AIDisclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useGame } from '@/contexts/GameContext';
 import { useTyphoon } from '@/hooks/useTyphoon';
-import { TyphoonMessage } from '@/lib/typhoon';
+import { OpenAIMessage } from '@/lib/typhoon';
 import { CaseSolution } from '@/types/game';
 
 interface SolveCasePageProps {
@@ -177,7 +177,7 @@ Please analyze the player's solution and include this JSON format in your respon
 }
 \`\`\``;
 
-            const messages: TyphoonMessage[] = [
+            const messages: OpenAIMessage[] = [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userPrompt }
             ];

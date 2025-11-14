@@ -18,15 +18,31 @@ This project is part of [Typhoon Application Week](https://apps.opentyphoon.ai),
 
 - **Adaptive Difficulty**: Typhoon adjusts the complexity of cases and hints based on player performance and selected difficulty level.
 
-## Getting Started (Local Development)
+## Getting Started
 
-### Prerequisites
+### Option 1: Deploy to Vercel (Recommended)
 
-- Node.js 18+ 
-- pnpm 8+
-- Typhoon API key
+The easiest way to get started is to deploy directly to Vercel:
 
-### Installation
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/typhoon-detective-game)
+
+**Quick Steps:**
+1. Click the "Deploy" button above
+2. Connect your GitHub account
+3. Add your `OPENAI_API_KEY` in the environment variables
+4. Deploy!
+
+For detailed instructions, see [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
+
+### Option 2: Local Development
+
+#### Prerequisites
+
+- Node.js 18+
+- npm, pnpm, or yarn
+- OpenAI API key (get from https://platform.openai.com/api-keys)
+
+#### Installation
 
 1. Clone the repository:
    ```bash
@@ -36,21 +52,28 @@ This project is part of [Typhoon Application Week](https://apps.opentyphoon.ai),
 
 2. Install dependencies:
    ```bash
+   npm install
+   # or
    pnpm install
    ```
 
 3. Set up environment variables:
-   - Copy `.env.example` to `.env.local` and add your Typhoon API key:
-   ```
-   TYPHOON_API_KEY=your_api_key_here
+   - Copy `.env.example` to `.env.local` and add your OpenAI API key:
+   ```bash
+   OPENAI_API_KEY=sk-your-api-key-here
+   OPENAI_MODEL=gpt-4o  # Optional: choose your model
    ```
 
 4. Run the development server:
    ```bash
+   npm run dev
+   # or
    pnpm dev
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+For detailed setup instructions, see [SETUP.md](./SETUP.md)
 
 ## License
 

@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            let content = data.choices[0]?.message?.content || '';
+            const content = data.choices[0]?.message?.content || '';
 
             return NextResponse.json({ response: content });
         } catch (fetchError) {
