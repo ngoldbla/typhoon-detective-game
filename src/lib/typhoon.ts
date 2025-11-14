@@ -1,4 +1,4 @@
-export type OpenAIModel = 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4-turbo' | 'gpt-4' | 'gpt-3.5-turbo' | 'o1-preview' | 'o1-mini' | string;
+export type OpenAIModel = 'gpt-5' | 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4-turbo' | 'gpt-4' | 'gpt-3.5-turbo' | 'o1-preview' | 'o1-mini' | string;
 
 export interface OpenAIMessage {
     role: 'system' | 'user' | 'assistant';
