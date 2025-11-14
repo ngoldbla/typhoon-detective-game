@@ -1,4 +1,4 @@
-import { fetchTyphoonCompletion, TyphoonMessage } from './typhoon';
+import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { ClueAnalysis, Clue, Suspect, Case } from '@/types/game';
 
 // System prompts for clue analysis
@@ -121,16 +121,16 @@ Respond in the JSON format specified in the system instructions.`;
     }
 
     // Prepare messages for API call
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
     ];
 
     try {
         // Use the standard model for clue analysis
-        const response = await fetchTyphoonCompletion(
+        const response = await fetchOpenAICompletion(
             messages,
-            'typhoon-v2.1-12b-instruct',
+            undefined,
             0.7,
             2048
         );

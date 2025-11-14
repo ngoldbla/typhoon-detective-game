@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { fetchTyphoonCompletion, TyphoonMessage } from './typhoon';
+import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { CaseGenerationParams, GeneratedCase, Case, Clue, Suspect } from '@/types/game';
 
 // System prompt templates for case generation
@@ -105,7 +105,7 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
         }
 
         // Prepare messages for API call
-        const messages: TyphoonMessage[] = [
+        const messages: OpenAIMessage[] = [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }
         ];
@@ -123,7 +123,6 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
                 },
                 body: JSON.stringify({
                     messages,
-                    model: 'typhoon-v2.1-12b-instruct',
                     temperature: 0.7,
                     max_tokens: 8192
                 }),
@@ -139,15 +138,15 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
         } else {
             // If running on server-side, use direct API call
             console.log("Using server-side direct API call for case generation");
-            response = await fetchTyphoonCompletion(
+            response = await fetchOpenAICompletion(
                 messages,
-                'typhoon-v2.1-12b-instruct',
+                undefined,
                 0.7,
                 8192
             );
         }
 
-        console.log("Received response from Typhoon API");
+        console.log("Received response from OpenAI API");
 
         // Parse the JSON response
         try {

@@ -1,11 +1,11 @@
-export type TyphoonModel = 'typhoon-v2.1-12b-instruct';
+export type OpenAIModel = 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4-turbo' | 'gpt-4' | 'gpt-3.5-turbo' | 'o1-preview' | 'o1-mini' | string;
 
-export interface TyphoonMessage {
+export interface OpenAIMessage {
     role: 'system' | 'user' | 'assistant';
     content: string;
 }
 
-export interface TyphoonResponse {
+export interface OpenAIResponse {
     id: string;
     object: string;
     created: number;
@@ -25,24 +25,24 @@ export interface TyphoonResponse {
     };
 }
 
-export async function fetchTyphoonCompletion(
-    messages: TyphoonMessage[],
-    model: TyphoonModel = 'typhoon-v2.1-12b-instruct',
+export async function fetchOpenAICompletion(
+    messages: OpenAIMessage[],
+    model?: OpenAIModel,
     temperature: number = 0.7,
     max_tokens: number = 800
 ): Promise<string> {
     try {
-        console.log(`Calling Typhoon API with model: ${model}`);
+        console.log(`Calling OpenAI API with model: ${model}`);
 
         // Get base URL for the API endpoint
-        const baseUrl = typeof window !== 'undefined' 
-            ? window.location.origin 
+        const baseUrl = typeof window !== 'undefined'
+            ? window.location.origin
             : process.env.NEXT_PUBLIC_BASE_URL || '';
-            
+
         const apiUrl = `${baseUrl}/api/typhoon`;
 
         const controller = new AbortController();
-        
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -59,12 +59,12 @@ export async function fetchTyphoonCompletion(
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error(`Typhoon API error: Status ${response.status}`, errorText);
-            throw new Error(`Typhoon API error (${response.status}): ${errorText}`);
+            console.error(`OpenAI API error: Status ${response.status}`, errorText);
+            throw new Error(`OpenAI API error (${response.status}): ${errorText}`);
         }
 
         const data = await response.json();
-        
+
         if (!data.response) {
             console.error('Server API returned invalid response:', data);
             throw new Error('Received invalid response from server');
@@ -72,7 +72,7 @@ export async function fetchTyphoonCompletion(
 
         return data.response;
     } catch (error) {
-        console.error('Error calling Typhoon API:', error);
+        console.error('Error calling OpenAI API:', error);
         if (error instanceof DOMException && error.name === 'AbortError') {
             throw new Error('Request timed out. The server took too long to respond.');
         }

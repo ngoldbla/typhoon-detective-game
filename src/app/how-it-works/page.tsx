@@ -138,11 +138,13 @@ export default function HowItWorks() {
             Typhoon AI offers powerful language models optimized for a wide range of applications. This game demonstrates just one example of how Typhoon's models can create engaging interactive experiences.
           </p>
           <p className="mb-4">
-            Models used in this demo:
+            This demo uses AI language models for:
           </p>
           <ul className="list-disc pl-6 space-y-2 mb-6">
-            <li><strong>typhoon-v2.1-12b-instruct</strong>: Used for clue analysis and suspect interviews</li>
-            <li><strong>typhoon-v2-r1-70b-preview</strong>: Used for case generation and complex reasoning</li>
+            <li>Dynamic case generation with unique suspects, clues, and storylines</li>
+            <li>Interactive suspect interviews with contextual responses</li>
+            <li>Intelligent clue analysis and evidence evaluation</li>
+            <li>Solution validation and narrative generation</li>
           </ul>
           <div className="text-center">
             <a
