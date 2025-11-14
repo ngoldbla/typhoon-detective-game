@@ -1,4 +1,4 @@
-import { fetchTyphoonCompletion, TyphoonMessage } from './typhoon';
+import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { SuspectAnalysis, Suspect, Clue, Case, Interview } from '@/types/game';
 
 // System prompts for suspect analysis
@@ -99,15 +99,15 @@ Respond in a structured JSON format that can be parsed by JavaScript.`;
     }
 
     // Prepare messages for API call
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
     ];
 
     // Use the standard model for suspect analysis
-    const response = await fetchTyphoonCompletion(
+    const response = await fetchOpenAICompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined,
         0.7,
         2048
     );
@@ -180,7 +180,7 @@ Additional information:
     }
 
     // Prepare the conversation history
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: contextMessage },
     ];
@@ -194,9 +194,9 @@ Additional information:
     // Add the current question
     messages.push({ role: 'user', content: question });
 
-    const response = await fetchTyphoonCompletion(
+    const response = await fetchOpenAICompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined,
         0.7,
         2048
     );

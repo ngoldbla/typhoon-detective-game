@@ -1,4 +1,4 @@
-import { fetchTyphoonCompletion, TyphoonMessage } from './typhoon';
+import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { CaseSolution, Case, Clue, Suspect } from '@/types/game';
 
 // System prompts for case solving
@@ -111,15 +111,15 @@ Respond in a structured JSON format that can be parsed by JavaScript, including 
     }
 
     // Prepare messages for API call
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
     ];
 
     // Use the standard model for solution analysis
-    const response = await fetchTyphoonCompletion(
+    const response = await fetchOpenAICompletion(
         messages,
-        'typhoon-v2.1-12b-instruct',
+        undefined,
         0.7,
         2048
     );

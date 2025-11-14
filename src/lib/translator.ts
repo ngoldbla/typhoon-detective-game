@@ -1,10 +1,10 @@
-import { fetchTyphoonCompletion, TyphoonMessage } from './typhoon';
+import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 
 // Language codes
 export type Language = 'en' | 'th';
 
 /**
- * Translates text from one language to another using the Typhoon LLM
+ * Translates text from one language to another using OpenAI
  */
 export async function translateText(
     text: string,
@@ -17,8 +17,8 @@ export async function translateText(
     }
 
     // Create system prompt
-    const systemPrompt = `You are a professional translator who specializes in translating between English and Thai. 
-Translate the given text accurately, preserving the meaning, tone, and style of the original text. 
+    const systemPrompt = `You are a professional translator who specializes in translating between English and Thai.
+Translate the given text accurately, preserving the meaning, tone, and style of the original text.
 Respond only with the translated text, without any additional comments or explanations.`;
 
     // Create user prompt
@@ -27,16 +27,16 @@ Respond only with the translated text, without any additional comments or explan
 ${text}`;
 
     // Prepare messages for API call
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
     ];
 
     // Use the standard model for translation
     try {
-        const response = await fetchTyphoonCompletion(
+        const response = await fetchOpenAICompletion(
             messages,
-            'typhoon-v2.1-12b-instruct',
+            undefined,
             0.7,
             2048
         );
@@ -118,16 +118,16 @@ Respond only with the translated segments joined by the same delimiter, maintain
 ${combinedText}`;
 
     // Prepare messages for API call
-    const messages: TyphoonMessage[] = [
+    const messages: OpenAIMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
     ];
 
     try {
         // Use the standard model for translation
-        const response = await fetchTyphoonCompletion(
+        const response = await fetchOpenAICompletion(
             messages,
-            'typhoon-v2.1-12b-instruct',
+            undefined,
             0.7,
             2048
         );

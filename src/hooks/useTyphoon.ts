@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import { TyphoonMessage, TyphoonModel } from '@/lib/typhoon';
+import { OpenAIMessage, OpenAIModel } from '@/lib/typhoon';
 
-interface UseTyphoonOptions {
+interface UseOpenAIOptions {
     onSuccess?: (response: string) => void;
     onError?: (error: Error) => void;
 }
 
-export function useTyphoon(options: UseTyphoonOptions = {}) {
+export function useTyphoon(options: UseOpenAIOptions = {}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [response, setResponse] = useState<string | null>(null);
 
     const sendMessage = async (
-        messages: TyphoonMessage[],
-        model: TyphoonModel = 'typhoon-v2.1-12b-instruct',
+        messages: OpenAIMessage[],
+        model?: OpenAIModel,
         temperature: number = 0.7,
         max_tokens: number = 800
     ) => {
@@ -21,7 +21,7 @@ export function useTyphoon(options: UseTyphoonOptions = {}) {
         setError(null);
 
         try {
-            console.log(`Sending request to Typhoon API with model: ${model}`);
+            console.log(`Sending request to OpenAI API with model: ${model}`);
 
             const result = await fetch('/api/typhoon', {
                 method: 'POST',
@@ -38,8 +38,8 @@ export function useTyphoon(options: UseTyphoonOptions = {}) {
 
             if (!result.ok) {
                 const errorData = await result.json().catch(() => ({ error: `HTTP error ${result.status}` }));
-                const errorMessage = errorData.error || `Failed to get response from Typhoon API: ${result.status}`;
-                console.error('Typhoon API error:', errorMessage);
+                const errorMessage = errorData.error || `Failed to get response from OpenAI API: ${result.status}`;
+                console.error('OpenAI API error:', errorMessage);
                 throw new Error(errorMessage);
             }
 

@@ -141,7 +141,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8 text-center text-xs text-gray-500">
-            Powered by <a href="https://opentyphoon.ai" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--borderlands-yellow)]">Typhoon AI</a> models: typhoon-v2.1-12b-instruct & typhoon-v2-r1-70b-preview
+            Powered by AI language models
           </div>
         </div>
       </div>
