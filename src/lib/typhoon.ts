@@ -25,13 +25,16 @@ export interface OpenAIResponse {
     };
 }
 
+import { withRetry } from './retry';
+
 export async function fetchOpenAICompletion(
     messages: OpenAIMessage[],
     model?: OpenAIModel,
     temperature: number = 0.7,
-    max_tokens: number = 800
+    max_tokens: number = 800,
+    enableRetry: boolean = true
 ): Promise<string> {
-    try {
+    const makeRequest = async (): Promise<string> => {
         console.log(`Calling OpenAI API with model: ${model}`);
 
         // Get base URL for the API endpoint
@@ -71,6 +74,23 @@ export async function fetchOpenAICompletion(
         }
 
         return data.response;
+    };
+
+    try {
+        if (enableRetry) {
+            // Use retry logic for more robust API calls
+            return await withRetry(makeRequest, {
+                maxAttempts: 3,
+                delayMs: 1000,
+                backoffMultiplier: 2,
+                retryableStatuses: [408, 429, 500, 502, 503, 504],
+                onRetry: (attempt, error) => {
+                    console.log(`Retrying OpenAI API call (attempt ${attempt}):`, error.message);
+                }
+            });
+        } else {
+            return await makeRequest();
+        }
     } catch (error) {
         console.error('Error calling OpenAI API:', error);
         if (error instanceof DOMException && error.name === 'AbortError') {

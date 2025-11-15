@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         try {
             // OpenAI o1 models don't support temperature or max_tokens, they use max_completion_tokens
             const isO1Model = model.startsWith('o1-');
-            // gpt-5 models only support temperature=1
+            // gpt-5 models also use max_completion_tokens and require temperature=1
             const isGpt5Model = model.toLowerCase().includes('gpt-5');
             const requestBody: any = {
                 model,
@@ -57,12 +57,15 @@ export async function POST(request: NextRequest) {
             };
 
             if (isO1Model) {
-                // o1 models use max_completion_tokens instead
+                // o1 models use max_completion_tokens instead, no temperature
                 requestBody.max_completion_tokens = max_tokens;
+            } else if (isGpt5Model) {
+                // gpt-5 models use max_completion_tokens and temperature=1
+                requestBody.max_completion_tokens = max_tokens;
+                requestBody.temperature = 1.0;
             } else {
                 // Standard models use temperature and max_tokens
-                // gpt-5 models require temperature=1
-                requestBody.temperature = isGpt5Model ? 1.0 : temperature;
+                requestBody.temperature = temperature;
                 requestBody.max_tokens = max_tokens;
             }
 
