@@ -228,10 +228,13 @@ function formatGeneratedCase(data: unknown, _language: 'en' | 'th'): GeneratedCa
     }));
 
     // Find the guilty suspect based on the solution
-    const solution = (data as any)?.solution?.reasoning || (data as any)?.solution || '';
-    const guiltySuspectName = (data as any)?.solution?.culprit || '';
+    const solutionData = (data as any)?.solution;
+    const solutionText = typeof solutionData === 'string'
+        ? solutionData
+        : (solutionData?.reasoning || solutionData?.narrative || '');
+    const guiltySuspectName = solutionData?.culprit || solutionData?.culpritId || '';
 
-    if (solution && suspects.length > 0) {
+    if ((solutionText || guiltySuspectName) && suspects.length > 0) {
         if (guiltySuspectName) {
             // Mark the identified suspect from solution.culprit as guilty
             suspects.forEach(suspect => {
@@ -239,10 +242,10 @@ function formatGeneratedCase(data: unknown, _language: 'en' | 'th'): GeneratedCa
                     suspect.isGuilty = true;
                 }
             });
-        } else {
+        } else if (solutionText) {
             // Try to identify the guilty suspect from the solution text
             const guiltyName = suspects.map(s => s.name).find(name =>
-                solution.toLowerCase().includes(name.toLowerCase())
+                solutionText.toLowerCase().includes(name.toLowerCase())
             );
 
             if (guiltyName) {
@@ -263,6 +266,6 @@ function formatGeneratedCase(data: unknown, _language: 'en' | 'th'): GeneratedCa
         case: caseData,
         clues,
         suspects,
-        solution
+        solution: solutionText
     };
 } 
