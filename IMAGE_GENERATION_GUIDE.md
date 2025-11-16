@@ -1,4 +1,4 @@
-# Image Generation Guide for Typhoon Detective Game
+# Image Generation Guide for Emerson Detective Game
 
 This guide explains how to integrate OpenAI's DALL-E image generation API to create visuals that enhance the detective game experience.
 

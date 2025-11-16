@@ -16,7 +16,7 @@
    - Visit [railway.app](https://railway.app)
    - Click "New Project"
    - Select "Deploy from GitHub repo"
-   - Choose `typhoon-detective-game`
+   - Choose `emerson-detective-game`
 
 3. **Add Environment Variables**
    - Go to Variables tab

@@ -1,4 +1,4 @@
-"""Type definitions for the Typhoon Detective Game"""
+"""Type definitions for the Emerson Detective Game"""
 
 from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any

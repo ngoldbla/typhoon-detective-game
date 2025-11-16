@@ -1,4 +1,4 @@
-# 🔍 Typhoon Detective Game
+# 🔍 Emerson Detective Game
 
 An AI-powered interactive detective mystery game for children (ages 7+), built with Python and Streamlit.
 
@@ -30,7 +30,7 @@ An AI-powered interactive detective mystery game for children (ages 7+), built w
 ```bash
 # 1. Clone the repository
 git clone https://github.com/ngoldbla/typhoon-detective-game.git
-cd typhoon-detective-game
+cd emerson-detective-game
 
 # 2. Install dependencies
 pip install -r requirements.txt
@@ -84,7 +84,7 @@ The project includes:
 ## 📁 Project Structure
 
 ```
-typhoon-detective-game/
+emerson-detective-game/
 ├── streamlit_app.py          # Main Streamlit application
 ├── pages/                    # Streamlit multi-page app
 │   ├── 1_🆕_New_Case.py     # AI case generation

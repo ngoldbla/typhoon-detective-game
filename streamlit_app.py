@@ -1,5 +1,5 @@
 """
-Typhoon Detective Game - Streamlit Version
+Emerson Detective Game - Streamlit Version
 An AI-powered interactive detective mystery game for children (ages 7+)
 """
 
@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Page configuration
 st.set_page_config(
-    page_title="Typhoon Detective Game",
+    page_title="Emerson Detective Game",
     page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -127,7 +127,7 @@ def main():
     init_session_state()
 
     # Header
-    st.markdown('<h1 class="main-header">🔍 TYPHOON DETECTIVE GAME 🔍</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🔍 EMERSON DETECTIVE GAME 🔍</h1>', unsafe_allow_html=True)
 
     # Sidebar
     with st.sidebar:
@@ -178,7 +178,7 @@ def show_home_page():
         st.markdown('<div class="comic-card">', unsafe_allow_html=True)
         st.markdown("## Welcome, Detective! 🕵️")
         st.markdown("""
-        Welcome to the **Typhoon Detective Game**! Put on your detective hat and solve
+        Welcome to the **Emerson Detective Game**! Put on your detective hat and solve
         mysterious cases using your sharp mind and AI-powered investigation tools.
 
         ### 🎯 What's New?

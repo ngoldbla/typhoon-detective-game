@@ -1,4 +1,4 @@
-"""OpenAI client for Typhoon Detective Game"""
+"""OpenAI client for Emerson Detective Game"""
 
 import os
 from typing import List, Dict, Optional
