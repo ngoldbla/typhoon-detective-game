@@ -1,1 +1,1 @@
-# Typhoon Detective Game Library
+# Emerson Detective Game Library
