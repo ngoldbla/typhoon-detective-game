@@ -16,25 +16,41 @@
    - Visit [railway.app](https://railway.app)
    - Click "New Project"
    - Select "Deploy from GitHub repo"
-   - Choose `emerson-detective-game`
+   - Choose `typhoon-detective-game`
 
 3. **Add Environment Variables**
    - Go to Variables tab
    - Add: `OPENAI_API_KEY` = your-key-here
    - Optional: `OPENAI_MODEL` = gpt-4o
 
-4. **Deploy!**
+4. **Add Persistent Volume (Important!)**
+   - Go to "Settings" tab
+   - Scroll to "Volumes"
+   - Click "Add Volume"
+   - Mount path: `/data`
+   - This ensures your SQLite database persists across deployments
+
+5. **Deploy!**
    - Railway auto-detects Python from `requirements.txt`
-   - Uses `Procfile` for start command
+   - Uses `railway.toml` for deployment config
    - App goes live at `https://your-app.railway.app`
 
 ## Configuration Files
 
-- **railway.json** - Railway build config
+- **railway.toml** - Railway deployment config with volume mount
+- **railway.json** - Legacy Railway build config
 - **Procfile** - Web service command
 - **runtime.txt** - Python 3.11.6
 - **.python-version** - Nixpacks version
 - **requirements.txt** - Dependencies
+
+## Database Persistence
+
+This app uses SQLite for data persistence:
+- **Location**: `/data/detective_game.db`
+- **Volume**: Mounted at `/data` (configured in `railway.toml`)
+- **Data Stored**: Cases, clues, suspects, images, interview history
+- **Important**: Without the volume mount, all data will be lost on each deployment!
 
 ## Environment Variables
 
