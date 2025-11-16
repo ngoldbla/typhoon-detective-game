@@ -2,23 +2,31 @@ import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { SuspectAnalysis, Suspect, Clue, Case, Interview } from '@/types/game';
 
 // System prompts for suspect analysis
-const SUSPECT_ANALYSIS_PROMPT_EN = `You are a brilliant detective assistant helping analyze suspects in a case. 
-Given details about a suspect and the case context, provide a detailed analysis including:
-1. Assessment of the suspect's trustworthiness (on a scale of 0-100)
-2. Potential inconsistencies in their story or background
-3. Connections to discovered clues
-4. Suggested questions for further interrogation
+const SUSPECT_ANALYSIS_PROMPT_EN = `You are helping a 7-year-old child solve a fun mystery!
+You need to look at a person and the clues to help figure out what happened.
 
-Be precise, logical, and focus on deduction based on the evidence provided.`;
+Remember: Use SIMPLE words a 7-year-old can read. Keep it FUN and friendly!
 
-const SUSPECT_ANALYSIS_PROMPT_TH = `คุณเป็นผู้ช่วยนักสืบที่ฉลาดเฉียบแหลมที่กำลังช่วยวิเคราะห์ผู้ต้องสงสัยในคดี
-เมื่อได้รับรายละเอียดเกี่ยวกับผู้ต้องสงสัยและบริบทของคดี โปรดให้การวิเคราะห์โดยละเอียดซึ่งรวมถึง:
-1. การประเมินความน่าเชื่อถือของผู้ต้องสงสัย (ในระดับ 0-100)
-2. ความไม่สอดคล้องที่อาจเกิดขึ้นในเรื่องราวหรือประวัติของพวกเขา
-3. ความเชื่อมโยงกับหลักฐานที่ค้นพบ
-4. คำถามที่แนะนำสำหรับการสอบสวนเพิ่มเติม
+Tell me:
+1. How much can we trust what this person says? (Give a number from 0 to 100, where 100 means we can trust them a lot)
+2. Are there things in their story that don't match up? (Use simple words!)
+3. Which clues are connected to this person?
+4. What questions should we ask this person next? (Keep questions simple!)
 
-มีความแม่นยำ มีเหตุผล และมุ่งเน้นการอนุมานตามหลักฐานที่มี`;
+Make it fun and easy to understand. Remember this is for a child!`;
+
+const SUSPECT_ANALYSIS_PROMPT_TH = `คุณกำลังช่วยเด็กอายุ 7 ขวบแก้ปริศนาสนุกๆ!
+คุณต้องดูที่คนและเบาะแสเพื่อช่วยหาว่าเกิดอะไรขึ้น
+
+จำไว้: ใช้คำง่ายๆ ที่เด็ก 7 ขวบอ่านได้ ทำให้สนุกและเป็นมิตร!
+
+บอกฉัน:
+1. เราเชื่อคำพูดของคนนี้ได้แค่ไหน? (ให้ตัวเลข 0 ถึง 100 โดย 100 หมายความว่าเราเชื่อเขามาก)
+2. มีอะไรในเรื่องของเขาที่ไม่ตรงกันไหม? (ใช้คำง่ายๆ!)
+3. เบาะแสไหนเชื่อมโยงกับคนนี้?
+4. เราควรถามคำถามอะไรกับคนนี้ต่อไป? (ให้คำถามง่ายๆ!)
+
+ทำให้สนุกและเข้าใจง่าย จำไว้ว่านี่สำหรับเด็ก!`;
 
 /**
  * Analyzes a suspect in the context of a case using the Typhoon LLM
@@ -145,38 +153,38 @@ export async function processInterviewQuestion(
 ): Promise<string> {
     // System prompt for generating interview responses
     const systemPrompt = language === 'th'
-        ? `คุณเป็น${suspect.name} ผู้ต้องสงสัยในคดี ตอบคำถามตามบุคลิกและข้อมูลของคุณ`
-        : `You are ${suspect.name}, a suspect in this case. Answer questions according to your character and information.`;
+        ? `คุณเป็น${suspect.name} ตอบคำถามด้วยคำง่ายๆ ที่เด็ก 7 ขวบเข้าใจได้ เป็นมิตรและสุภาพ`
+        : `You are ${suspect.name}. Answer questions using simple words that a 7-year-old can understand. Be friendly and polite.`;
 
     // Create context message
     let contextMessage = '';
 
     if (language === 'th') {
-        contextMessage = `ข้อมูลของคุณในฐานะผู้ต้องสงสัย:
+        contextMessage = `ข้อมูลของคุณ:
 ชื่อ: ${suspect.name}
 คำอธิบาย: ${suspect.description}
 ประวัติ: ${suspect.background}
-แรงจูงใจที่เป็นไปได้: ${suspect.motive}
-ข้ออ้างที่อยู่: ${suspect.alibi}
+เหตุผล: ${suspect.motive}
+เรื่องของคุณ: ${suspect.alibi}
 
-ข้อมูลเพิ่มเติม:
-- ${suspect.isGuilty ? 'คุณเป็นคนที่กระทำผิดในคดีนี้จริง แต่พยายามปกปิดความจริง' : 'คุณไม่ได้เป็นผู้กระทำผิดในคดีนี้ แต่คุณอาจมีความลับที่คุณไม่ต้องการให้คนอื่นรู้'}
-- คุณควรตอบตามบุคลิกและข้อมูลของคุณ
-- อย่าบอกว่าคุณผิดหรือไม่ผิดโดยตรง แม้ว่าจะถูกถามตรงๆ
-- เมื่อถูกถามเกี่ยวกับหลักฐาน ให้ตอบในลักษณะที่สมเหตุสมผลกับสถานการณ์ของคุณ`;
+สิ่งสำคัญ:
+- ${suspect.isGuilty ? 'คุณทำสิ่งนี้จริง แต่คุณไม่ได้ตั้งใจทำผิด' : 'คุณไม่ได้ทำ แต่คุณอาจมีเรื่องที่คุณอาย'}
+- ตอบด้วยคำง่ายๆ ที่เด็กเข้าใจ
+- อย่าบอกตรงๆ ว่าคุณทำหรือไม่ทำ
+- ทำตัวเป็นธรรมชาติและเป็นมิตร`;
     } else {
-        contextMessage = `Your information as a suspect:
+        contextMessage = `Your information:
 Name: ${suspect.name}
 Description: ${suspect.description}
 Background: ${suspect.background}
-Possible Motive: ${suspect.motive}
-Alibi: ${suspect.alibi}
+Reason: ${suspect.motive}
+Your story: ${suspect.alibi}
 
-Additional information:
-- ${suspect.isGuilty ? 'You are actually guilty of this crime but trying to hide the truth' : 'You are not guilty of this crime, but you may have secrets you don\'t want others to know'}
-- You should answer in character according to your information
-- Do not directly state whether you are guilty or not, even if asked directly
-- When asked about evidence, respond in a way that makes sense for your situation`;
+Important rules:
+- ${suspect.isGuilty ? 'You did this thing, but you didn\'t mean to do anything wrong' : 'You didn\'t do it, but you might have something you\'re embarrassed about'}
+- Answer using simple words that children can understand
+- Don\'t say directly if you did it or didn\'t do it
+- Act natural and friendly`;
     }
 
     // Prepare the conversation history
