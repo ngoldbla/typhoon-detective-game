@@ -202,18 +202,18 @@ class OpenAIClient:
     def generate_image(
         self,
         prompt: str,
-        model: str = "gpt-image-1",
+        model: str = "dall-e-3",
         size: str = "1024x1024",
         quality: str = "standard",
         n: int = 1
     ) -> str:
-        """Generate an image using OpenAI image generation
+        """Generate an image using OpenAI DALL-E image generation
 
         Args:
             prompt: Text description of the image to generate
-            model: Model to use (default: gpt-image-1)
-            size: Image size (1024x1024, 1792x1024, or 1024x1792)
-            quality: Image quality (standard or hd)
+            model: Model to use (default: dall-e-3, can also use dall-e-2)
+            size: Image size (1024x1024, 1792x1024, or 1024x1792 for dall-e-3)
+            quality: Image quality (standard or hd, only for dall-e-3)
             n: Number of images to generate
 
         Returns:
