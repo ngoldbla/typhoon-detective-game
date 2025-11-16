@@ -1,32 +1,36 @@
 import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { SuspectAnalysis, Suspect, Clue, Case, Interview } from '@/types/game';
 
-// System prompts for suspect analysis
+// System prompts for suspect analysis (child-friendly for 7-year-olds)
 const SUSPECT_ANALYSIS_PROMPT_EN = `You are helping a 7-year-old child solve a fun mystery!
-You need to look at a person and the clues to help figure out what happened.
+Look at this person and the clues to help figure out what happened.
 
-Remember: Use SIMPLE words a 7-year-old can read. Keep it FUN and friendly!
+Remember: Use SIMPLE words a 2nd or 3rd grader can read. Keep it FUN and friendly!
 
 Tell me:
-1. How much can we trust what this person says? (Give a number from 0 to 100, where 100 means we can trust them a lot)
-2. Are there things in their story that don't match up? (Use simple words!)
-3. Which clues are connected to this person?
-4. What questions should we ask this person next? (Keep questions simple!)
+1. Can we believe what this person says? (Give a number from 0 to 100, where 100 means we believe them a lot)
+2. Are there things in their story that don't match up? (Use simple words like "found" "saw" "was there")
+3. Which clues connect to this person?
+4. What simple questions should we ask next? (Use easy words!)
 
-Make it fun and easy to understand. Remember this is for a child!`;
+Keep everything SHORT and SIMPLE. This is for a child!
+
+Respond in valid JSON format.`;
 
 const SUSPECT_ANALYSIS_PROMPT_TH = `คุณกำลังช่วยเด็กอายุ 7 ขวบแก้ปริศนาสนุกๆ!
-คุณต้องดูที่คนและเบาะแสเพื่อช่วยหาว่าเกิดอะไรขึ้น
+ดูคนนี้และเบาะแสเพื่อช่วยหาว่าเกิดอะไรขึ้น
 
-จำไว้: ใช้คำง่ายๆ ที่เด็ก 7 ขวบอ่านได้ ทำให้สนุกและเป็นมิตร!
+จำไว้: ใช้คำง่ายๆ ที่เด็กป.2-ป.3 อ่านได้ ทำให้สนุกและเป็นมิตร!
 
 บอกฉัน:
-1. เราเชื่อคำพูดของคนนี้ได้แค่ไหน? (ให้ตัวเลข 0 ถึง 100 โดย 100 หมายความว่าเราเชื่อเขามาก)
-2. มีอะไรในเรื่องของเขาที่ไม่ตรงกันไหม? (ใช้คำง่ายๆ!)
+1. เราเชื่อคำพูดของคนนี้ได้ไหม? (ให้ตัวเลข 0 ถึง 100 โดย 100 หมายความว่าเราเชื่อเขามาก)
+2. มีอะไรในเรื่องของเขาที่ไม่ตรงกันไหม? (ใช้คำง่ายๆ เช่น "พบ" "เห็น" "อยู่ที่นั่น")
 3. เบาะแสไหนเชื่อมโยงกับคนนี้?
-4. เราควรถามคำถามอะไรกับคนนี้ต่อไป? (ให้คำถามง่ายๆ!)
+4. เราควรถามคำถามง่ายๆ อะไรต่อไป? (ใช้คำง่ายๆ!)
 
-ทำให้สนุกและเข้าใจง่าย จำไว้ว่านี่สำหรับเด็ก!`;
+ให้ทุกอย่างสั้นและง่าย นี่สำหรับเด็ก!
+
+ตอบในรูปแบบ JSON ที่ถูกต้อง`;
 
 /**
  * Analyzes a suspect in the context of a case using the Typhoon LLM
@@ -151,46 +155,46 @@ export async function processInterviewQuestion(
     previousQuestions: { question: string, answer: string }[],
     language: 'en' | 'th'
 ): Promise<string> {
-    // System prompt for generating interview responses
-    const systemPrompt = language === 'th'
-        ? `คุณเป็น${suspect.name} ตอบคำถามด้วยคำง่ายๆ ที่เด็ก 7 ขวบเข้าใจได้ เป็นมิตรและสุภาพ`
-        : `You are ${suspect.name}. Answer questions using simple words that a 7-year-old can understand. Be friendly and polite.`;
-
-    // Create context message
-    let contextMessage = '';
+    // Enhanced system prompt with full context for better responses
+    let systemPrompt = '';
 
     if (language === 'th') {
-        contextMessage = `ข้อมูลของคุณ:
-ชื่อ: ${suspect.name}
-คำอธิบาย: ${suspect.description}
-ประวัติ: ${suspect.background}
-เหตุผล: ${suspect.motive}
-เรื่องของคุณ: ${suspect.alibi}
+        systemPrompt = `คุณเป็น ${suspect.name} ในเรื่อง "${caseData.title}"
+
+ข้อมูลของคุณ:
+- คำอธิบาย: ${suspect.description}
+- ประวัติ: ${suspect.background}
+- เหตุผลที่เป็นไปได้: ${suspect.motive}
+- เรื่องราวของคุณ: ${suspect.alibi}
 
 สิ่งสำคัญ:
-- ${suspect.isGuilty ? 'คุณทำสิ่งนี้จริง แต่คุณไม่ได้ตั้งใจทำผิด' : 'คุณไม่ได้ทำ แต่คุณอาจมีเรื่องที่คุณอาย'}
-- ตอบด้วยคำง่ายๆ ที่เด็กเข้าใจ
+${suspect.isGuilty ? '- คุณทำสิ่งนี้จริง แต่คุณไม่ได้ตั้งใจทำผิด คุณมีเหตุผลดีๆ' : '- คุณไม่ได้ทำ แต่คุณอาจมีเรื่องที่คุณอาย'}
+- ตอบคำถามในฐานะ ${suspect.name} ด้วยคำง่ายๆ ที่เด็ก 7 ขวบเข้าใจได้
+- ใช้ประโยคสั้นๆ (ไม่เกิน 15 คำ)
 - อย่าบอกตรงๆ ว่าคุณทำหรือไม่ทำ
-- ทำตัวเป็นธรรมชาติและเป็นมิตร`;
+- ทำตัวเป็นธรรมชาติและเป็นมิตร เหมือนคุยกับเพื่อน
+- ตอบแค่ 2-3 ประโยคเท่านั้น`;
     } else {
-        contextMessage = `Your information:
-Name: ${suspect.name}
-Description: ${suspect.description}
-Background: ${suspect.background}
-Reason: ${suspect.motive}
-Your story: ${suspect.alibi}
+        systemPrompt = `You are ${suspect.name} in the mystery "${caseData.title}".
+
+Your information:
+- Description: ${suspect.description}
+- Background: ${suspect.background}
+- Possible reason: ${suspect.motive}
+- Your story: ${suspect.alibi}
 
 Important rules:
-- ${suspect.isGuilty ? 'You did this thing, but you didn\'t mean to do anything wrong' : 'You didn\'t do it, but you might have something you\'re embarrassed about'}
-- Answer using simple words that children can understand
-- Don\'t say directly if you did it or didn\'t do it
-- Act natural and friendly`;
+${suspect.isGuilty ? '- You DID do this thing, but you didn\'t mean to do anything wrong. You had a good reason.' : '- You DIDN\'T do it, but you might have something you\'re embarrassed about.'}
+- Answer questions as ${suspect.name} using simple words that a 7-year-old can understand
+- Use SHORT sentences (under 15 words each)
+- Don't say directly if you did it or didn't do it
+- Act natural and friendly, like talking to a friend
+- Keep your answer to 2-3 sentences only`;
     }
 
     // Prepare the conversation history
     const messages: OpenAIMessage[] = [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: contextMessage },
+        { role: 'system', content: systemPrompt }
     ];
 
     // Add previous questions to conversation history
