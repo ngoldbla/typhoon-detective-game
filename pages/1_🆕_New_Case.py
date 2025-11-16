@@ -173,19 +173,21 @@ if submitted:
             progress_placeholder.info("🎨 Step 2/3: Creating AI artwork (this may take 1-2 minutes)...")
             generated_case = generate_case(params, generate_images=True)
 
-            # Convert to dict for storage
+            # Convert to dict for storage - structure matches what save_case expects
             case_dict = {
-                'id': generated_case.case.id,
-                'title': generated_case.case.title,
-                'description': generated_case.case.description,
-                'summary': generated_case.case.summary,
-                'difficulty': generated_case.case.difficulty,
-                'location': generated_case.case.location,
-                'language': language,
-                'solved': False,
-                'archived': False,
-                'dateTime': getattr(generated_case.case, 'dateTime', ''),
-                'imageUrl': generated_case.case.imageUrl,
+                'case': {
+                    'id': generated_case.case.id,
+                    'title': generated_case.case.title,
+                    'description': generated_case.case.description,
+                    'summary': generated_case.case.summary,
+                    'difficulty': generated_case.case.difficulty,
+                    'location': generated_case.case.location,
+                    'solved': False,
+                    'archived': False,
+                    'dateTime': getattr(generated_case.case, 'dateTime', ''),
+                    'imageUrl': generated_case.case.imageUrl,
+                    'isLLMGenerated': True
+                },
                 'clues': [asdict(c) for c in generated_case.clues],
                 'suspects': [asdict(s) for s in generated_case.suspects],
                 'solution': generated_case.solution
@@ -196,7 +198,7 @@ if submitted:
             save_case(case_dict)
 
             # Set as active case
-            st.session_state.active_case_id = case_dict['id']
+            st.session_state.active_case_id = case_dict['case']['id']
             st.session_state.just_generated_case = case_dict
 
             progress_placeholder.empty()
@@ -217,27 +219,27 @@ if st.session_state.just_generated_case:
     st.markdown("---")
     st.markdown(f"""
     <h2 style="font-family: 'Bangers', cursive; color: #FF6B35; text-align: center; font-size: 2rem;">
-        📋 {case_dict['title']}
+        📋 {case_dict['case']['title']}
     </h2>
     """, unsafe_allow_html=True)
 
     # Display case scene image
-    image_data = get_image_data('case', case_dict['id'])
+    image_data = get_image_data('case', case_dict['case']['id'])
     if image_data:
         data_uri = get_image_data_uri(image_data)
         st.markdown(f'<img src="{data_uri}" style="width: 100%; max-height: 400px; object-fit: cover;">',
                    unsafe_allow_html=True)
-    elif case_dict.get('imageUrl') and case_dict['imageUrl'] not in ["/case-file.png", ""]:
-        st.image(case_dict['imageUrl'], use_container_width=True, caption="Case Scene")
+    elif case_dict['case'].get('imageUrl') and case_dict['case']['imageUrl'] not in ["/case-file.png", ""]:
+        st.image(case_dict['case']['imageUrl'], use_container_width=True, caption="Case Scene")
 
     # Case details
     st.markdown(f"""
     <div class="detective-card">
-        <p style="font-size: 1.1rem; line-height: 1.6;">{case_dict['description']}</p>
+        <p style="font-size: 1.1rem; line-height: 1.6;">{case_dict['case']['description']}</p>
 
         <div style="margin-top: 1rem;">
-            <strong>📍 Location:</strong> {case_dict['location']}<br>
-            <strong>⭐ Difficulty:</strong> {case_dict['difficulty'].title()}<br>
+            <strong>📍 Location:</strong> {case_dict['case']['location']}<br>
+            <strong>⭐ Difficulty:</strong> {case_dict['case']['difficulty'].title()}<br>
             <strong>🧩 Clues to Examine:</strong> {len(case_dict['clues'])}<br>
             <strong>👥 Suspects to Interview:</strong> {len(case_dict['suspects'])}
         </div>
@@ -282,7 +284,7 @@ if st.session_state.just_generated_case:
 
     with col_investigate:
         if st.button("🔍 Start Investigation", use_container_width=True, type="primary"):
-            st.session_state.selected_case_id = case_dict['id']
+            st.session_state.selected_case_id = case_dict['case']['id']
             st.session_state.just_generated_case = None
             st.switch_page("pages/3_🔍_Case_Details.py")
 
