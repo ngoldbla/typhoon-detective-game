@@ -136,7 +136,7 @@ Respond in the JSON format specified in the system instructions.`;
         // Use the standard model for clue analysis
         const response = await fetchOpenAICompletion(
             messages,
-            undefined,
+            'gpt-4o',
             0.7,
             2048
         );

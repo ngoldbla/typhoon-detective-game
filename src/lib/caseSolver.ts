@@ -119,7 +119,7 @@ Respond in a structured JSON format that can be parsed by JavaScript, including 
     // Use the standard model for solution analysis
     const response = await fetchOpenAICompletion(
         messages,
-        undefined,
+        'gpt-4o',
         0.7,
         2048
     );

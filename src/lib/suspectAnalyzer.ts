@@ -119,7 +119,7 @@ Respond in a structured JSON format that can be parsed by JavaScript.`;
     // Use the standard model for suspect analysis
     const response = await fetchOpenAICompletion(
         messages,
-        undefined,
+        'gpt-4o',
         0.7,
         2048
     );
@@ -208,7 +208,7 @@ ${suspect.isGuilty ? '- You DID do this thing, but you didn\'t mean to do anythi
 
     const response = await fetchOpenAICompletion(
         messages,
-        undefined,
+        'gpt-4o',
         0.7,
         2048
     );
