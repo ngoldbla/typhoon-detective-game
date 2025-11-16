@@ -4,6 +4,7 @@ import os
 from typing import List, Dict, Optional
 from openai import OpenAI
 import streamlit as st
+import httpx
 
 
 class OpenAIClient:
@@ -22,12 +23,44 @@ class OpenAIClient:
         if not self.api_key:
             raise ValueError("OPENAI_API_KEY environment variable not set")
 
-        # Initialize OpenAI client
-        client_kwargs = {"api_key": self.api_key}
+        # Initialize OpenAI client with explicit parameters
+        # Note: Modern OpenAI SDK (v1.0+) uses httpx and automatically handles
+        # proxy environment variables (HTTP_PROXY, HTTPS_PROXY, etc.)
+        # Do NOT pass 'proxies' parameter - it's not supported
+
+        # Create httpx client with proper configuration
+        # This avoids issues with proxy configurations
+        http_client = httpx.Client(
+            timeout=60.0,
+            follow_redirects=True,
+            # httpx automatically picks up HTTP_PROXY/HTTPS_PROXY env vars
+            # Do NOT manually pass proxies parameter
+        )
+
+        client_kwargs = {
+            "api_key": self.api_key,
+            "http_client": http_client,
+            "max_retries": 2   # Retry on network errors
+        }
+
         if self.base_url:
             client_kwargs["base_url"] = self.base_url
 
-        self.client = OpenAI(**client_kwargs)
+        try:
+            self.client = OpenAI(**client_kwargs)
+        except TypeError as e:
+            # Handle case where unexpected parameters are passed
+            error_msg = str(e)
+            if "proxies" in error_msg or "http_client" in error_msg:
+                # Fallback: try without custom http_client
+                print(f"Warning: Error with custom http_client: {error_msg}")
+                print("Falling back to default OpenAI client configuration")
+                fallback_kwargs = {"api_key": self.api_key}
+                if self.base_url:
+                    fallback_kwargs["base_url"] = self.base_url
+                self.client = OpenAI(**fallback_kwargs)
+            else:
+                raise
 
         # Default model
         self.default_model = os.getenv('OPENAI_MODEL', 'gpt-4o')
