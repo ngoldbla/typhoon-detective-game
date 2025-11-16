@@ -574,6 +574,44 @@ def main():
 
         st.markdown("---")
 
+        # Audio settings
+        st.markdown("### 🔊 Audio Settings")
+
+        # Initialize audio settings in session state if not present
+        if 'audio_settings' not in st.session_state:
+            st.session_state.audio_settings = {
+                'tts_enabled': True,
+                'dictation_enabled': True,
+                'sounds_enabled': True
+            }
+
+        tts_enabled = st.checkbox(
+            "Text-to-Speech",
+            value=st.session_state.audio_settings.get('tts_enabled', True),
+            help="Hear suspect responses read aloud"
+        )
+
+        dictation_enabled = st.checkbox(
+            "Voice Dictation",
+            value=st.session_state.audio_settings.get('dictation_enabled', True),
+            help="Ask questions using your voice"
+        )
+
+        sounds_enabled = st.checkbox(
+            "Sound Effects",
+            value=st.session_state.audio_settings.get('sounds_enabled', True),
+            help="Play sounds for game events"
+        )
+
+        # Update session state
+        st.session_state.audio_settings = {
+            'tts_enabled': tts_enabled,
+            'dictation_enabled': dictation_enabled,
+            'sounds_enabled': sounds_enabled
+        }
+
+        st.markdown("---")
+
         # Statistics from database
         st.markdown("### 📊 Your Stats")
 

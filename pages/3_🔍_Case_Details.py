@@ -20,6 +20,13 @@ from lib.database import (
 )
 from lib.image_generator import get_image_data_uri
 from lib.sample_questions import get_sample_questions_for_suspect
+from lib.audio_utils import (
+    get_tts_component,
+    get_speech_recognition_component,
+    get_sound_effect,
+    get_audio_settings_ui,
+    play_celebration_sound
+)
 from dataclasses import asdict
 
 
@@ -141,6 +148,14 @@ if not case:
 # Load progress from database
 examined_clues = get_examined_clues(case_id)
 interviewed_suspects = get_interviewed_suspects(case_id)
+
+# Audio settings (will be shown in sidebar by get_audio_settings_ui)
+if 'audio_settings' not in st.session_state:
+    st.session_state.audio_settings = {
+        'tts_enabled': True,
+        'dictation_enabled': True,
+        'sounds_enabled': True
+    }
 
 
 # Display case header
@@ -279,6 +294,10 @@ with tab1:
                                 save_clue_analysis(clue_dict['id'], analysis_dict)
                                 mark_clue_examined(case_id, clue_dict['id'])
 
+                                # Play sound effect
+                                if st.session_state.audio_settings.get('sounds_enabled', True):
+                                    st.markdown(get_sound_effect('clue', auto_play=True), unsafe_allow_html=True)
+
                                 st.success("✅ Clue analyzed!")
                                 st.rerun()
 
@@ -344,7 +363,7 @@ with tab2:
                     # Show previous Q&A
                     if interview_history:
                         st.markdown("**Previous Questions:**")
-                        for qa in interview_history:
+                        for idx, qa in enumerate(interview_history):
                             st.markdown(f"""
                             <div class="chat-message chat-question">
                                 <strong>🕵️ You:</strong> {qa['question']}
@@ -353,6 +372,13 @@ with tab2:
                                 <strong>{suspect_emoji} {suspect_dict['name']}:</strong> {qa['answer']}
                             </div>
                             """, unsafe_allow_html=True)
+
+                            # Add TTS button for answer
+                            if st.session_state.audio_settings.get('tts_enabled', True):
+                                st.markdown(
+                                    get_tts_component(qa['answer'], button_label=f"🔊 Listen to Answer"),
+                                    unsafe_allow_html=True
+                                )
                         st.markdown("---")
 
                     # Sample questions
@@ -377,6 +403,11 @@ with tab2:
 
                     # Ask custom question
                     st.markdown("**✏️ Or ask your own question:**")
+
+                    # Voice dictation button
+                    if st.session_state.audio_settings.get('dictation_enabled', True):
+                        st.markdown(get_speech_recognition_component(f"voice_{suspect_dict['id']}"), unsafe_allow_html=True)
+
                     question = st.text_input(
                         "Type your question:",
                         key=f"question_input_{suspect_dict['id']}",
@@ -528,6 +559,11 @@ with tab3:
                     # Show result with styling
                     if solution.solved:
                         st.balloons()
+
+                        # Play celebration sound
+                        if st.session_state.audio_settings.get('sounds_enabled', True):
+                            st.markdown(play_celebration_sound(), unsafe_allow_html=True)
+
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
                                     padding: 2rem; border-radius: 15px; border: 4px solid #2E7D32;
@@ -544,6 +580,10 @@ with tab3:
                         # Update database
                         update_case_status(case_id, solved=True)
                     else:
+                        # Play "wrong" sound
+                        if st.session_state.audio_settings.get('sounds_enabled', True):
+                            st.markdown(get_sound_effect('wrong', auto_play=True), unsafe_allow_html=True)
+
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
                                     padding: 2rem; border-radius: 15px; border: 4px solid #F57C00;
