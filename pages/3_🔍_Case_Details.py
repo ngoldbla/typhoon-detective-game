@@ -94,10 +94,23 @@ def load_custom_css():
         transform: translateY(-2px);
     }
 
-    img {
+    /* Only style images within detective cards, not balloons or other elements */
+    .detective-card img,
+    .main img[src^="data:image"],
+    .main img[src*="suspect"],
+    .main img[src*="clue"],
+    .main img[src*="case"] {
         border-radius: 15px;
         border: 4px solid var(--primary-color);
         box-shadow: 5px 5px 0px var(--secondary-color);
+    }
+
+    /* Ensure balloons don't get borders */
+    [data-testid*="balloon"] img,
+    [class*="balloon" i] img,
+    canvas {
+        border: none !important;
+        box-shadow: none !important;
     }
 
     /* Sidebar styling for better contrast */
@@ -318,7 +331,7 @@ with tab1:
 
                                 # Play sound effect
                                 if st.session_state.audio_settings.get('sounds_enabled', True):
-                                    st.markdown(get_sound_effect('clue', auto_play=True), unsafe_allow_html=True)
+                                    get_sound_effect('clue')
 
                                 st.success("✅ Clue analyzed!")
                                 st.rerun()
@@ -408,11 +421,8 @@ with tab2:
                     st.markdown("**💡 Sample Questions (click to use):**")
 
                     sample_questions = get_sample_questions_for_suspect(
-                        suspect_dict['name'],
-                        suspect_dict['description'],
-                        suspect_dict['alibi'],
-                        case['description'],
-                        st.session_state.get('language', 'en')
+                        suspect_dict,
+                        case
                     )
 
                     # Display sample questions as clickable buttons in a grid
@@ -585,7 +595,7 @@ with tab3:
 
                         # Play celebration sound
                         if st.session_state.audio_settings.get('sounds_enabled', True):
-                            st.markdown(play_celebration_sound(), unsafe_allow_html=True)
+                            play_celebration_sound()
 
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
@@ -607,7 +617,7 @@ with tab3:
                     else:
                         # Play "wrong" sound
                         if st.session_state.audio_settings.get('sounds_enabled', True):
-                            st.markdown(get_sound_effect('wrong', auto_play=True), unsafe_allow_html=True)
+                            get_sound_effect('error')
 
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);

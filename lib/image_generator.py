@@ -41,7 +41,7 @@ No text or labels in the image."""
     try:
         return client.generate_image(
             prompt=prompt,
-            model="gpt-image-1",
+            model="dall-e-3",
             size="1792x1024",  # Landscape for scene
             quality="standard"
         )
@@ -86,7 +86,7 @@ No text or labels in the image."""
     try:
         return client.generate_image(
             prompt=prompt,
-            model="gpt-image-1",
+            model="dall-e-3",
             size="1024x1024",  # Square for portrait
             quality="standard"
         )
@@ -132,7 +132,7 @@ No text or labels in the image."""
     try:
         return client.generate_image(
             prompt=prompt,
-            model="gpt-image-1",
+            model="dall-e-3",
             size="1024x1024",  # Square for evidence
             quality="standard"
         )
@@ -175,7 +175,7 @@ No text or labels in the image."""
     try:
         return client.generate_image(
             prompt=prompt,
-            model="gpt-image-1",
+            model="dall-e-3",
             size="1792x1024",  # Landscape for location
             quality="standard"
         )
