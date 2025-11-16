@@ -20,9 +20,10 @@ def get_tts_component(text: str, button_label: str = "🔊 Listen") -> str:
     """
     # Escape quotes and newlines for JavaScript
     safe_text = text.replace("'", "\\'").replace('"', '\\"').replace('\n', ' ')
+    button_id = f"tts_btn_{id(text)}"
 
     html = f"""
-    <button onclick="speakText_{id(text)}()" style="
+    <button id="{button_id}" style="
         background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
         color: white;
         border: 2px solid #2C3E50;
@@ -37,37 +38,42 @@ def get_tts_component(text: str, button_label: str = "🔊 Listen") -> str:
         {button_label}
     </button>
     <script>
-        function speakText_{id(text)}() {{
-            if ('speechSynthesis' in window) {{
-                // Cancel any ongoing speech
-                window.speechSynthesis.cancel();
+        (function() {{
+            const button = document.getElementById('{button_id}');
+            if (button) {{
+                button.addEventListener('click', function() {{
+                    if ('speechSynthesis' in window) {{
+                        // Cancel any ongoing speech
+                        window.speechSynthesis.cancel();
 
-                const utterance = new SpeechSynthesisUtterance("{safe_text}");
-                utterance.rate = 0.9;  // Slightly slower for clarity
-                utterance.pitch = 1.1;  // Slightly higher pitch for kid-friendly voice
-                utterance.volume = 1.0;
+                        const utterance = new SpeechSynthesisUtterance("{safe_text}");
+                        utterance.rate = 0.9;  // Slightly slower for clarity
+                        utterance.pitch = 1.1;  // Slightly higher pitch for kid-friendly voice
+                        utterance.volume = 1.0;
 
-                // Try to use a child-friendly voice if available
-                const voices = window.speechSynthesis.getVoices();
-                const preferredVoice = voices.find(voice =>
-                    voice.name.includes('Google') ||
-                    voice.name.includes('female') ||
-                    voice.lang.startsWith('en')
-                );
-                if (preferredVoice) {{
-                    utterance.voice = preferredVoice;
-                }}
+                        // Try to use a child-friendly voice if available
+                        const voices = window.speechSynthesis.getVoices();
+                        const preferredVoice = voices.find(voice =>
+                            voice.name.includes('Google') ||
+                            voice.name.includes('female') ||
+                            voice.lang.startsWith('en')
+                        );
+                        if (preferredVoice) {{
+                            utterance.voice = preferredVoice;
+                        }}
 
-                window.speechSynthesis.speak(utterance);
-            }} else {{
-                alert('Sorry, your browser does not support text-to-speech.');
+                        window.speechSynthesis.speak(utterance);
+                    }} else {{
+                        alert('Sorry, your browser does not support text-to-speech.');
+                    }}
+                }});
             }}
-        }}
 
-        // Load voices (needed for some browsers)
-        if ('speechSynthesis' in window) {{
-            window.speechSynthesis.getVoices();
-        }}
+            // Load voices (needed for some browsers)
+            if ('speechSynthesis' in window) {{
+                window.speechSynthesis.getVoices();
+            }}
+        }})();
     </script>
     """
 
@@ -85,9 +91,12 @@ def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a q
     Returns:
         HTML string with the speech recognition button component
     """
+    button_id = f"dictation-btn-{id(input_key)}"
+    status_id = f"dictation-status-{id(input_key)}"
+
     html = f"""
     <div style="margin: 10px 0;">
-        <button onclick="startDictation()" id="dictation-btn" style="
+        <button id="{button_id}" style="
             background: linear-gradient(135deg, #17A2B8 0%, #138496 100%);
             color: white;
             border: 2px solid #2C3E50;
@@ -101,7 +110,7 @@ def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a q
         ">
             🎤 Speak Your Question
         </button>
-        <span id="dictation-status" style="
+        <span id="{status_id}" style="
             margin-left: 10px;
             font-family: 'Comic Neue', cursive;
             color: #F7931E;
@@ -110,55 +119,65 @@ def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a q
     </div>
 
     <script>
-        function startDictation() {{
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {{
-                alert('Sorry, your browser does not support voice dictation. Please use Chrome, Edge, or Safari.');
-                return;
-            }}
+        (function() {{
+            const btnElement = document.getElementById('{button_id}');
+            const statusElement = document.getElementById('{status_id}');
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            const statusElement = document.getElementById('dictation-status');
-            const btnElement = document.getElementById('dictation-btn');
-
-            recognition.onstart = function() {{
-                statusElement.textContent = '🎤 Listening...';
-                btnElement.style.background = 'linear-gradient(135deg, #DC3545 0%, #C82333 100%)';
-            }};
-
-            recognition.onresult = function(event) {{
-                const transcript = event.results[0][0].transcript;
-
-                // Find the text input and set its value
-                const inputs = window.parent.document.querySelectorAll('input[type="text"], textarea');
-                for (let input of inputs) {{
-                    if (input.placeholder === "{placeholder}" || input.value === "") {{
-                        input.value = transcript;
-                        input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                        break;
+            if (btnElement) {{
+                btnElement.addEventListener('click', function() {{
+                    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {{
+                        alert('Sorry, your browser does not support voice dictation. Please use Chrome, Edge, or Safari.');
+                        return;
                     }}
-                }}
 
-                statusElement.textContent = '✅ Got it!';
-                setTimeout(() => {{ statusElement.textContent = ''; }}, 2000);
-            }};
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    const recognition = new SpeechRecognition();
 
-            recognition.onerror = function(event) {{
-                statusElement.textContent = '❌ Error: ' + event.error;
-                setTimeout(() => {{ statusElement.textContent = ''; }}, 3000);
-            }};
+                    recognition.lang = 'en-US';
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
 
-            recognition.onend = function() {{
-                btnElement.style.background = 'linear-gradient(135deg, #17A2B8 0%, #138496 100%)';
-            }};
+                    recognition.onstart = function() {{
+                        if (statusElement) {{
+                            statusElement.textContent = '🎤 Listening...';
+                        }}
+                        btnElement.style.background = 'linear-gradient(135deg, #DC3545 0%, #C82333 100%)';
+                    }};
 
-            recognition.start();
-        }}
+                    recognition.onresult = function(event) {{
+                        const transcript = event.results[0][0].transcript;
+
+                        // Find the text input and set its value
+                        const inputs = window.parent.document.querySelectorAll('input[type="text"], textarea');
+                        for (let input of inputs) {{
+                            if (input.placeholder === "{placeholder}" || input.value === "") {{
+                                input.value = transcript;
+                                input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                break;
+                            }}
+                        }}
+
+                        if (statusElement) {{
+                            statusElement.textContent = '✅ Got it!';
+                            setTimeout(() => {{ statusElement.textContent = ''; }}, 2000);
+                        }}
+                    }};
+
+                    recognition.onerror = function(event) {{
+                        if (statusElement) {{
+                            statusElement.textContent = '❌ Error: ' + event.error;
+                            setTimeout(() => {{ statusElement.textContent = ''; }}, 3000);
+                        }}
+                    }};
+
+                    recognition.onend = function() {{
+                        btnElement.style.background = 'linear-gradient(135deg, #17A2B8 0%, #138496 100%)';
+                    }};
+
+                    recognition.start();
+                }});
+            }}
+        }})();
     </script>
     """
 
