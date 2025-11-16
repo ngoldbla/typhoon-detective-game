@@ -186,7 +186,7 @@ export async function generateCase(params: CaseGenerationParams): Promise<Genera
             console.log("Using server-side direct API call for case generation");
             response = await fetchOpenAICompletion(
                 messages,
-                undefined,
+                'gpt-4o',
                 0.7,
                 8192
             );

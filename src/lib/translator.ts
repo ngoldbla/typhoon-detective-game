@@ -36,7 +36,7 @@ ${text}`;
     try {
         const response = await fetchOpenAICompletion(
             messages,
-            undefined,
+            'gpt-4o',
             0.7,
             2048
         );
@@ -127,7 +127,7 @@ ${combinedText}`;
         // Use the standard model for translation
         const response = await fetchOpenAICompletion(
             messages,
-            undefined,
+            'gpt-4o',
             0.7,
             2048
         );
