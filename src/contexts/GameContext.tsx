@@ -3,8 +3,6 @@
 import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { AppState, Case, Clue, Suspect, Interview, GameState, ClueAnalysis } from '@/types/game';
 import { defaultCases, defaultClues, defaultSuspects } from '@/data/defaultCases';
-import { thCases, thClues, thSuspects } from '@/data/translatedCases';
-import { useLanguage } from './LanguageContext';
 
 // Initial state
 const initialState: AppState = {
@@ -223,50 +221,6 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 // Provider component
 export function GameProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(gameReducer, initialState);
-    const { language } = useLanguage();
-
-    // Effect to apply translations when language changes
-    useEffect(() => {
-        if (language === 'th') {
-            // Apply Thai translations to cases, clues, and suspects
-            const updatedCases = state.cases.map(c => ({
-                ...c,
-                ...thCases[c.id]
-            }));
-
-            const updatedClues = state.clues.map(c => ({
-                ...c,
-                ...thClues[c.id]
-            }));
-
-            const updatedSuspects = state.suspects.map(s => ({
-                ...s,
-                ...thSuspects[s.id]
-            }));
-
-            // Update the state with translated content
-            dispatch({
-                type: 'LOAD_GAME',
-                payload: {
-                    ...state,
-                    cases: updatedCases,
-                    clues: updatedClues,
-                    suspects: updatedSuspects
-                }
-            });
-        } else {
-            // For English, reload the default data
-            dispatch({
-                type: 'LOAD_GAME',
-                payload: {
-                    ...state,
-                    cases: [...defaultCases],
-                    clues: [...defaultClues],
-                    suspects: [...defaultSuspects]
-                }
-            });
-        }
-    }, [language]);
 
     // Load game from localStorage on initial mount
     useEffect(() => {

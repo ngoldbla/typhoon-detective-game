@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Configurable values with defaults
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
-const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-5';
+const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4o';
 
 export async function POST(request: NextRequest) {
     try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         // Skip model validation when using custom base URLs, as they may support different models
         // Only validate for standard OpenAI endpoint
         if (OPENAI_BASE_URL === 'https://api.openai.com/v1') {
-            const validModels = ['gpt-5', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'];
+            const validModels = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'];
             if (!validModels.includes(model)) {
                 console.error('API route error: Invalid model', model);
                 return NextResponse.json(
@@ -49,8 +49,6 @@ export async function POST(request: NextRequest) {
         try {
             // OpenAI o1 models don't support temperature or max_tokens, they use max_completion_tokens
             const isO1Model = model.startsWith('o1-');
-            // gpt-5 models also use max_completion_tokens and require temperature=1
-            const isGpt5Model = model.toLowerCase().includes('gpt-5');
             const requestBody: any = {
                 model,
                 messages,
@@ -59,10 +57,6 @@ export async function POST(request: NextRequest) {
             if (isO1Model) {
                 // o1 models use max_completion_tokens instead, no temperature
                 requestBody.max_completion_tokens = max_tokens;
-            } else if (isGpt5Model) {
-                // gpt-5 models use max_completion_tokens and temperature=1
-                requestBody.max_completion_tokens = max_tokens;
-                requestBody.temperature = 1.0;
             } else {
                 // Standard models use temperature and max_tokens
                 requestBody.temperature = temperature;
