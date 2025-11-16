@@ -148,9 +148,13 @@ def main():
         st.markdown("### 📊 Stats")
         total_cases = len(st.session_state.cases)
         solved_cases = len([c for c in st.session_state.cases if c.get('solved', False)])
+        archived_cases = len([c for c in st.session_state.cases if c.get('archived', False)])
+        active_cases = total_cases - archived_cases
 
         st.metric("Total Cases", total_cases)
+        st.metric("Active Cases", active_cases)
         st.metric("Solved Cases", solved_cases)
+        st.metric("Archived Cases", archived_cases)
 
         if total_cases > 0:
             st.progress(solved_cases / total_cases)
