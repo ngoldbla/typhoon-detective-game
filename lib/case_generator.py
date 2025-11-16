@@ -140,11 +140,13 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
 
         # Create user prompt
         if params.custom_scenario:
-            # Use custom scenario if provided
+            # Use custom scenario if provided - be explicit about requirements
             if params.language == 'th':
                 user_prompt = f"สร้างคดีสืบสวนที่มีความยาก {params.difficulty} เกี่ยวกับ: {params.custom_scenario}"
+                user_prompt += "\n\nต้องมี 4-6 เบาะแส และ 3-5 ผู้ต้องสงสัย"
             else:
                 user_prompt = f"Create a {params.difficulty} difficulty detective case about: {params.custom_scenario}"
+                user_prompt += "\n\nIMPORTANT: The case MUST include 4-6 interconnected clues and 3-5 suspects. Make sure the mystery matches the scenario description exactly."
         else:
             # Use standard parameters
             if params.language == 'th':
@@ -156,10 +158,10 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
                 user_prompt += f" with a {params.theme} theme" if params.language == 'en' else f" ในธีม {params.theme}"
 
         if params.location:
-            user_prompt += f" set in {params.location}" if params.language == 'en' else f" ที่เกิดขึ้นใน {params.location}"
+            user_prompt += f", set in {params.location}" if params.language == 'en' else f" ที่เกิดขึ้นใน {params.location}"
 
         if params.era:
-            user_prompt += f" during the {params.era} era" if params.language == 'en' else f" ในยุค {params.era}"
+            user_prompt += f", in the {params.era}" if params.language == 'en' else f" ในช่วง{params.era}"
 
         # Prepare messages
         messages = [
@@ -193,8 +195,9 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
         elif "base_url" in error_msg.lower() or "connection" in error_msg.lower():
             print("Note: Check that OPENAI_BASE_URL (if set) is correct and accessible.")
 
-        # Return fallback case
-        return format_generated_case(FALLBACK_CASE, params.language)
+        # Re-raise the exception so the UI can show it to the user
+        # instead of silently falling back to the default case
+        raise Exception(f"Failed to generate case: {error_msg}") from e
 
 
 def parse_json_response(response: str) -> Dict[str, Any]:
