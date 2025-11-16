@@ -7,6 +7,68 @@ import streamlit as st
 import httpx
 
 
+# Valid OpenAI model names (as of January 2025)
+VALID_MODELS = {
+    'gpt-4o',
+    'gpt-4o-mini',
+    'gpt-4-turbo',
+    'gpt-4-turbo-preview',
+    'gpt-4',
+    'gpt-3.5-turbo',
+    'o1-preview',
+    'o1-mini',
+    'o1',
+    # Add common variants/aliases
+    'gpt-4-turbo-2024-04-09',
+    'gpt-4-0125-preview',
+    'gpt-4-1106-preview',
+    'gpt-3.5-turbo-0125',
+}
+
+
+def validate_model_name(model: str) -> tuple[bool, str]:
+    """Validate if a model name is valid
+
+    Args:
+        model: The model name to validate
+
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    if not model:
+        return False, "Model name cannot be empty"
+
+    # Check if it's a known valid model
+    if model in VALID_MODELS:
+        return True, ""
+
+    # Check for common mistakes
+    if 'gpt-5' in model.lower():
+        return False, (
+            f"Invalid model '{model}': GPT-5 does not exist yet. "
+            f"Did you mean 'gpt-4o' (GPT-4 optimized) or 'gpt-4-turbo'?"
+        )
+
+    if 'gpt-4.1' in model.lower():
+        return False, (
+            f"Invalid model '{model}': Model names use hyphens, not dots. "
+            f"Did you mean 'gpt-4o', 'gpt-4-turbo', or 'gpt-4'?"
+        )
+
+    # Check if it starts with a known prefix (might be a newer model)
+    known_prefixes = ('gpt-4o', 'gpt-4', 'gpt-3.5', 'o1')
+    if any(model.startswith(prefix) for prefix in known_prefixes):
+        # Might be a valid newer model, allow it but warn
+        return True, f"Warning: Model '{model}' is not in the known list but has a valid prefix. Proceeding anyway."
+
+    # Unknown model
+    return False, (
+        f"Invalid model '{model}': Not a recognized OpenAI model. "
+        f"Valid models include: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo, o1-preview, o1-mini. "
+        f"Check your OPENAI_MODEL environment variable."
+    )
+
+
 class OpenAIClient:
     """Client for interacting with OpenAI API"""
 
@@ -62,8 +124,16 @@ class OpenAIClient:
             else:
                 raise
 
-        # Default model
+        # Default model - validate it
         self.default_model = os.getenv('OPENAI_MODEL', 'gpt-4o')
+        is_valid, error_msg = validate_model_name(self.default_model)
+        if not is_valid:
+            raise ValueError(
+                f"Invalid OPENAI_MODEL in environment: {error_msg}\n"
+                f"Please set OPENAI_MODEL to a valid model like 'gpt-4o' or 'gpt-4o-mini'"
+            )
+        elif error_msg:  # Warning message
+            print(error_msg)
 
     def fetch_completion(
         self,
@@ -85,10 +155,12 @@ class OpenAIClient:
         """
         model = model or self.default_model
 
-        # GPT-5 models only support temperature=1
-        # Adjust temperature if using gpt-5
-        if 'gpt-5' in model.lower():
-            temperature = 1.0
+        # Validate the model name before making API call
+        is_valid, error_msg = validate_model_name(model)
+        if not is_valid:
+            raise ValueError(error_msg)
+        elif error_msg:  # Warning
+            print(error_msg)
 
         try:
             response = self.client.chat.completions.create(
@@ -101,8 +173,31 @@ class OpenAIClient:
             return response.choices[0].message.content
 
         except Exception as e:
-            print(f"Error calling OpenAI API: {e}")
-            raise
+            error_str = str(e)
+            print(f"Error calling OpenAI API: {error_str}")
+
+            # Provide more helpful error messages
+            if "model" in error_str.lower() and "does not exist" in error_str.lower():
+                raise ValueError(
+                    f"The model '{model}' is not recognized by OpenAI API. "
+                    f"Valid models include: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo. "
+                    f"Please check your OPENAI_MODEL environment variable."
+                ) from e
+            elif "timeout" in error_str.lower() or "timed out" in error_str.lower():
+                raise TimeoutError(
+                    f"Request to OpenAI API timed out. This might be due to:\n"
+                    f"1. An invalid model name ('{model}')\n"
+                    f"2. Network connectivity issues\n"
+                    f"3. OpenAI API being slow/unavailable\n"
+                    f"Please verify your OPENAI_MODEL is set to a valid model like 'gpt-4o'"
+                ) from e
+            elif "api_key" in error_str.lower():
+                raise ValueError(
+                    "Invalid or missing API key. Please check that OPENAI_API_KEY is set correctly."
+                ) from e
+            else:
+                # Re-raise the original exception with additional context
+                raise Exception(f"OpenAI API error: {error_str}") from e
 
 
 # Singleton instance
