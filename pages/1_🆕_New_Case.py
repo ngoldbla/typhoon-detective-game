@@ -60,6 +60,22 @@ def load_custom_css():
         box-shadow: 5px 5px 0px var(--secondary-color);
     }
 
+    /* Sidebar styling for better contrast */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #FFF9F0 0%, #FFE8CC 100%);
+        border-right: 4px solid var(--primary-color);
+    }
+
+    [data-testid="stSidebar"] a,
+    [data-testid="stSidebar"] [data-testid="stPageLink-NavLink"],
+    [data-testid="stSidebar"] [role="link"],
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label {
+        color: #2C3E50 !important;
+        font-weight: bold !important;
+    }
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -224,9 +240,10 @@ if st.session_state.just_generated_case:
     """, unsafe_allow_html=True)
 
     # Display case scene image
-    image_data = get_image_data('case', case_dict['case']['id'])
+    url_identifier = f"case/{case_dict['case']['id']}"
+    image_data = get_image_data(url_identifier)
     if image_data:
-        data_uri = get_image_data_uri(image_data)
+        data_uri = get_image_data_uri(image_data['data'])
         st.markdown(f'<img src="{data_uri}" style="width: 100%; max-height: 400px; object-fit: cover;">',
                    unsafe_allow_html=True)
     elif case_dict['case'].get('imageUrl') and case_dict['case']['imageUrl'] not in ["/case-file.png", ""]:

@@ -156,6 +156,33 @@ def load_custom_css():
         color: var(--text-dark);
     }
 
+    /* Sidebar navigation links - ensure high contrast */
+    [data-testid="stSidebar"] a,
+    [data-testid="stSidebar"] [data-testid="stPageLink-NavLink"],
+    [data-testid="stSidebar"] [role="link"] {
+        color: var(--text-dark) !important;
+        font-weight: bold !important;
+    }
+
+    [data-testid="stSidebar"] a:hover,
+    [data-testid="stSidebar"] [data-testid="stPageLink-NavLink"]:hover {
+        color: var(--primary-color) !important;
+    }
+
+    /* Sidebar text elements */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label {
+        color: var(--text-dark) !important;
+    }
+
+    /* Sidebar widgets */
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stRadio label {
+        color: var(--text-dark) !important;
+        font-weight: bold !important;
+    }
+
     /* Metrics styling */
     [data-testid="metric-container"] {
         background-color: white;
