@@ -117,41 +117,11 @@ export default function SolveCasePage({ params }: SolveCasePageProps) {
             }
 
             // Prepare the prompt for the LLM
-            const systemPrompt = language === 'th'
-                ? `คุณกำลังช่วยเด็ก 7 ขวบเช็คคำตอบในเกมปริศนา ใช้คำง่ายๆ ที่เด็กอ่านได้ ให้กำลังใจและเป็นมิตร
-คำตอบที่ถูก: ${caseSuspects.find(s => s.isGuilty)?.name} ทำ
-ดูคำตอบของเด็กและบอกว่าถูกหรือไม่ บอกด้วยคำง่ายๆ`
-                : `You are helping a 7-year-old child check their answer in a mystery game. Use simple words kids can read. Be encouraging and friendly!
+            const systemPrompt = `You are helping a 7-year-old child check their answer in a mystery game. Use simple words kids can read. Be encouraging and friendly!
 Correct answer: ${caseSuspects.find(s => s.isGuilty)?.name} did it
 Look at the child's answer and tell them if they're right. Use simple words!`;
 
-            const userPrompt = language === 'th'
-                ? `คดี: ${caseData.title}
-รายละเอียดคดี: ${caseData.summary}
-
-ผู้ต้องสงสัยที่ผู้เล่นเลือก: ${selectedSuspectData.name}
-รายละเอียดผู้ต้องสงสัย: ${selectedSuspectData.description}
-ภูมิหลัง: ${selectedSuspectData.background}
-แรงจูงใจ: ${selectedSuspectData.motive}
-ข้ออ้าง: ${selectedSuspectData.alibi}
-
-หลักฐานที่ผู้เล่นเลือก:
-${selectedCluesData.map(c => `- ${c.title}: ${c.description}`).join('\n')}
-
-เหตุผลของผู้เล่น:
-${reasoning}
-
-กรุณาวิเคราะห์คำตอบของผู้เล่น และใช้ฟอร์แมต JSON ตามนี้ในคำตอบ (แทรกในข้อความตอบ):
-\`\`\`json
-{
-  "solved": boolean, // ผู้เล่นระบุตัวผู้ร้ายถูกต้องหรือไม่
-  "culpritId": "string", // ID ของผู้ร้ายตัวจริง
-  "reasoning": "string", // การวิเคราะห์ว่าเหตุผลของผู้เล่นถูกต้องหรือไม่
-  "evidenceIds": ["string"], // ID ของหลักฐานสำคัญที่เชื่อมโยงกับผู้ร้าย
-  "narrative": "string" // เรื่องราวสรุปของคดีว่าเกิดอะไรขึ้นจริงๆ
-}
-\`\`\``
-                : `Case: ${caseData.title}
+            const userPrompt = `Case: ${caseData.title}
 Case Details: ${caseData.summary}
 
 Player's Selected Suspect: ${selectedSuspectData.name}

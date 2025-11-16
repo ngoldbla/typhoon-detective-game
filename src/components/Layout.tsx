@@ -8,12 +8,8 @@ import {
     FaClipboardList,
     FaCog,
     FaQuestionCircle,
-    FaCogs,
-    FaGithub,
-    FaDiscord,
-    FaTwitter
+    FaCogs
 } from 'react-icons/fa';
-import { SiHuggingface } from 'react-icons/si';
 import ProgressBar from './ProgressBar';
 
 // Define type for navigation items
@@ -26,12 +22,11 @@ interface NavItem {
 
 export default function Layout({ children, title }: { children: React.ReactNode, title?: string }) {
     const pathname = usePathname();
-    const { language, setLanguage, t } = useLanguage();
+    const { t } = useLanguage();
     const { state } = useGame();
     const { gameState } = state;
     const [progress, setProgress] = useState(0);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [showGithubButton, setShowGithubButton] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -49,25 +44,6 @@ export default function Layout({ children, title }: { children: React.ReactNode,
         }
     }, [gameState]);
 
-    // Check if current date is after May 8, 2025 17:00:01 UTC
-    useEffect(() => {
-        const checkDate = () => {
-            try {
-                const releaseDate = new Date('2025-05-08T17:00:01Z');
-                const currentDate = new Date();
-                setShowGithubButton(currentDate > releaseDate);
-            } catch (error) {
-                console.error('Error checking date:', error);
-            }
-        };
-
-        checkDate();
-        // Check periodically in case user keeps the page open
-        const interval = setInterval(checkDate, 60000); // Check every minute
-
-        return () => clearInterval(interval);
-    }, []);
-
     // Create nav items with useMemo to prevent unnecessary re-renders
     const navItems = useMemo<NavItem[]>(() => {
         const items: NavItem[] = [
@@ -75,23 +51,11 @@ export default function Layout({ children, title }: { children: React.ReactNode,
             { href: '/cases', icon: <FaClipboardList className="text-lg" />, label: t('nav.cases') },
             { href: '/how-to-play', icon: <FaQuestionCircle className="text-lg" />, label: t('nav.howToPlay') || 'How to Play' },
             { href: '/how-it-works', icon: <FaCogs className="text-lg" />, label: t('nav.howItWorks') || 'How It Works' },
-            // { href: '/clues', icon: <FaSearch className="text-lg" />, label: t('nav.clues') },
-            // { href: '/suspects', icon: <FaUser className="text-lg" />, label: t('nav.suspects') },
             { href: '/settings', icon: <FaCog className="text-lg" />, label: t('nav.settings') }
         ];
 
-        // Add GitHub source button if it should be shown
-        if (showGithubButton) {
-            items.push({
-                href: 'https://github.com/scb-10x/typhoon-detective-game',
-                icon: <FaGithub className="text-lg" />,
-                label: 'Source',
-                isExternal: true
-            });
-        }
-
         return items;
-    }, [t, showGithubButton]); // Only recalculate when language (affects t) or showGithubButton changes
+    }, [t]); // Only recalculate when language (affects t) changes
 
     // Create a safe wrapper for the Link component to handle any potential errors
     const SafeLink = ({ item }: { item: NavItem }) => {
@@ -166,31 +130,6 @@ export default function Layout({ children, title }: { children: React.ReactNode,
                             DEMO
                         </span>
                     </div>
-
-                    <div className="flex items-center">
-                        <div className="flex borderlands-panel bg-surface-800 p-1">
-                            <button
-                                onClick={() => setLanguage('en')}
-                                className={`px-3 py-1 text-sm font-bold transition-all ${language === 'en'
-                                    ? 'bg-[var(--borderlands-orange)] text-white'
-                                    : 'text-surface-300 hover:bg-surface-700'
-                                    }`}
-                                data-gtm-id="lang-en"
-                            >
-                                EN
-                            </button>
-                            <button
-                                onClick={() => setLanguage('th')}
-                                className={`px-3 py-1 text-sm font-bold transition-all ${language === 'th'
-                                    ? 'bg-[var(--borderlands-orange)] text-white'
-                                    : 'text-surface-300 hover:bg-surface-700'
-                                    }`}
-                                data-gtm-id="lang-th"
-                            >
-                                TH
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 {gameState.activeCase && (
@@ -222,73 +161,6 @@ export default function Layout({ children, title }: { children: React.ReactNode,
                     ))}
                 </div>
             </nav>
-
-            <footer className="bg-surface-950 border-t border-surface-800 py-6 px-4" data-gtm-id="main-footer">
-                <div className="container mx-auto max-w-4xl">
-                    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                        <div>
-                            <a
-                                href="#"
-                                className="text-purple-500 hover:text-purple-400 font-medium transition-colors"
-                                data-gtm-id="footer-ai-link"
-                            >
-                                #BuiltWithEmersonsAI
-                            </a>
-                        </div>
-
-                        <div>
-                            <a
-                                href="#"
-                                className="text-surface-300 hover:text-white transition-colors text-sm"
-                                data-gtm-id="footer-terms-link"
-                            >
-                                Terms and Conditions
-                            </a>
-                        </div>
-
-                        <div className="flex items-center space-x-4">
-                            <a
-                                href="https://github.com/scb-10x"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-surface-300 hover:text-white transition-colors"
-                                aria-label="GitHub"
-                                data-gtm-id="social-github"
-                            >
-                                <FaGithub className="w-5 h-5" />
-                            </a>
-                            <a
-                                href="https://discord.gg/9F6nrFXyNt"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-surface-300 hover:text-white transition-colors"
-                                aria-label="Discord"
-                                data-gtm-id="social-discord"
-                            >
-                                <FaDiscord className="w-5 h-5" />
-                            </a>
-                            <a
-                                href="https://huggingface.co/scb10x"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-surface-300 hover:text-white transition-colors"
-                                aria-label="Hugging Face"
-                                data-gtm-id="social-huggingface"
-                            >
-                                <SiHuggingface className="w-5 h-5" />
-                            </a>
-                            <a
-                                href="#"
-                                className="text-surface-300 hover:text-white transition-colors"
-                                aria-label="X (Twitter)"
-                                data-gtm-id="social-twitter"
-                            >
-                                <FaTwitter className="w-5 h-5" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 }

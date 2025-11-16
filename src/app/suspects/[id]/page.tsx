@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { FaArrowLeft, FaChevronRight, FaComment, FaUserTie, FaQuestionCircle, FaEllipsisH } from 'react-icons/fa';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
-import AIDisclaimer from '@/components/AIDisclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useGame } from '@/contexts/GameContext';
 import { useTyphoon } from '@/hooks/useTyphoon';
@@ -130,16 +129,7 @@ export default function SuspectPage({ params }: SuspectPageProps) {
             setConversation(updatedConversation);
 
             // Prepare the prompt for the LLM
-            const systemPrompt = language === 'th'
-                ? `คุณเป็น ${suspect.name} จากคดี "${caseData.title}". จงตอบคำถามตามบุคลิกของตัวละครและข้อมูลด้านล่าง:
-ข้อมูลคดี: ${caseData.summary}
-คำอธิบายผู้ต้องสงสัย: ${suspect.description}
-ภูมิหลัง: ${suspect.background}
-แรงจูงใจ: ${suspect.motive}
-ข้ออ้าง: ${suspect.alibi}
-
-ตอบคำถามในฐานะผู้ต้องสงสัย ใช้ภาษาที่เป็นธรรมชาติและสมจริง จงคงความลึกลับไว้หากเหมาะสม`
-                : `You are ${suspect.name} from the case "${caseData.title}". Respond to questions in character based on the following information:
+            const systemPrompt = `You are ${suspect.name} from the case "${caseData.title}". Respond to questions in character based on the following information:
 Case summary: ${caseData.summary}
 Suspect description: ${suspect.description}
 Background: ${suspect.background}
@@ -224,8 +214,6 @@ Answer as the suspect would, using natural language and appropriate demeanor. Ma
                     </button>
                     <h1 className="text-2xl font-bold">{suspect.name}</h1>
                 </div>
-
-                <AIDisclaimer className="mb-4" />
 
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

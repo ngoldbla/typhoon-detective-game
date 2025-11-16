@@ -1,7 +1,6 @@
 'use client';
 
 import Layout from '@/components/Layout';
-import AIDisclaimer from '@/components/AIDisclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FaBrain, FaRobot, FaMagnifyingGlass, FaUserTie, FaScaleBalanced, FaArrowRight } from 'react-icons/fa6';
 import Link from 'next/link';
@@ -23,8 +22,6 @@ export default function HowItWorks() {
         <p className="mb-8 text-md">
           This game showcases the capabilities of Emerson's AI in creating interactive, dynamic gaming experiences through state-of-the-art large language models.
         </p>
-
-        <AIDisclaimer className="mb-8" />
 
         <div className="space-y-8">
           <section className="borderlands-panel bg-surface-800 p-6 transform rotate-1">

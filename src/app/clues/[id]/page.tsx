@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Layout from '@/components/Layout';
 import Button from '@/components/Button';
-import AIDisclaimer from '@/components/AIDisclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useGame } from '@/contexts/GameContext';
 import { analyzeClue } from '@/lib/clueAnalyzer';
@@ -126,8 +125,6 @@ export default function CluePage({ params }: CluePageProps) {
                     {t('nav.back')}
                 </Button>
             </div>
-
-            <AIDisclaimer className="mb-6" />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Main clue info */}
