@@ -133,7 +133,18 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
         return format_generated_case(parsed_data, params.language)
 
     except Exception as e:
-        print(f"Case generation error: {e}")
+        error_msg = str(e)
+        print(f"Case generation error: {error_msg}")
+
+        # Provide more helpful error message for common issues
+        if "proxies" in error_msg:
+            print("Note: If you're using proxies, ensure HTTP_PROXY/HTTPS_PROXY environment variables are set correctly.")
+            print("The OpenAI SDK will automatically use them. Do not pass 'proxies' as a parameter.")
+        elif "api_key" in error_msg.lower():
+            print("Note: Ensure OPENAI_API_KEY environment variable is set correctly.")
+        elif "base_url" in error_msg.lower() or "connection" in error_msg.lower():
+            print("Note: Check that OPENAI_BASE_URL (if set) is correct and accessible.")
+
         # Return fallback case
         return format_generated_case(FALLBACK_CASE, params.language)
 
