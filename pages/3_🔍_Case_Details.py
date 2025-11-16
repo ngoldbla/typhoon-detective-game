@@ -43,6 +43,10 @@ st.title(f"🔍 {case['title']}")
 
 # Case description
 with st.expander("📖 Case Description", expanded=True):
+    # Show case scene image if available
+    if case.get('imageUrl') and case['imageUrl'] != "/case-file.png":
+        st.image(case['imageUrl'], use_container_width=True)
+
     st.markdown(case['description'])
     st.markdown(f"**Location:** {case['location']}")
     st.markdown(f"**Difficulty:** {case['difficulty'].title()}")
@@ -58,7 +62,14 @@ with tab1:
     else:
         for clue_dict in case['clues']:
             with st.container():
-                col1, col2 = st.columns([3, 1])
+                # Show clue image if available
+                if clue_dict.get('imageUrl'):
+                    col_img, col_content, col_btn = st.columns([1, 2, 1])
+                    with col_img:
+                        st.image(clue_dict['imageUrl'], use_container_width=True)
+                    col1, col2 = col_content, col_btn
+                else:
+                    col1, col2 = st.columns([3, 1])
 
                 with col1:
                     clue_emoji = clue_dict.get('emoji', '🔍')
@@ -145,7 +156,14 @@ with tab2:
     else:
         for suspect_dict in case['suspects']:
             with st.container():
-                col1, col2 = st.columns([3, 1])
+                # Show suspect portrait if available
+                if suspect_dict.get('imageUrl'):
+                    col_img, col_content, col_btn = st.columns([1, 2, 1])
+                    with col_img:
+                        st.image(suspect_dict['imageUrl'], use_container_width=True)
+                    col1, col2 = col_content, col_btn
+                else:
+                    col1, col2 = st.columns([3, 1])
 
                 with col1:
                     suspect_emoji = suspect_dict.get('emoji', '👤')

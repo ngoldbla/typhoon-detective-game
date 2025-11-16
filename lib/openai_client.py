@@ -199,6 +199,55 @@ class OpenAIClient:
                 # Re-raise the original exception with additional context
                 raise Exception(f"OpenAI API error: {error_str}") from e
 
+    def generate_image(
+        self,
+        prompt: str,
+        model: str = "dall-e-3",
+        size: str = "1024x1024",
+        quality: str = "standard",
+        n: int = 1
+    ) -> str:
+        """Generate an image using DALL-E
+
+        Args:
+            prompt: Text description of the image to generate
+            model: Model to use (dall-e-2 or dall-e-3)
+            size: Image size (1024x1024, 1792x1024, or 1024x1792 for dall-e-3)
+            quality: Image quality (standard or hd for dall-e-3)
+            n: Number of images to generate (1-10 for dall-e-2, only 1 for dall-e-3)
+
+        Returns:
+            URL of the generated image
+        """
+        try:
+            response = self.client.images.generate(
+                model=model,
+                prompt=prompt,
+                size=size,
+                quality=quality,
+                n=n
+            )
+
+            return response.data[0].url
+
+        except Exception as e:
+            error_str = str(e)
+            print(f"Error generating image: {error_str}")
+
+            # Provide helpful error messages
+            if "billing" in error_str.lower():
+                raise ValueError(
+                    "Image generation failed due to billing issues. "
+                    "Please check your OpenAI account has credits available."
+                ) from e
+            elif "content_policy" in error_str.lower() or "safety" in error_str.lower():
+                raise ValueError(
+                    "Image generation failed: Content policy violation. "
+                    "The prompt may contain inappropriate content."
+                ) from e
+            else:
+                raise Exception(f"Image generation error: {error_str}") from e
+
 
 # Singleton instance
 _client: Optional[OpenAIClient] = None

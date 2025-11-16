@@ -34,6 +34,7 @@ class Clue:
     examined: bool = False
     relevance: str = "important"
     emoji: str = "🔍"
+    imageUrl: Optional[str] = None
 
 
 @dataclass
@@ -49,6 +50,7 @@ class Suspect:
     isGuilty: bool = False
     interviewed: bool = False
     emoji: str = "👤"
+    imageUrl: Optional[str] = None
 
 
 @dataclass
