@@ -17,34 +17,56 @@ st.set_page_config(
 # Load custom CSS
 def load_css():
     css = """
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <style>
-    /* Comic book theme styles */
+    /* Comic book theme styles - Mobile Safari Optimized */
     @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+    /* Base styles with mobile-first approach */
+    * {
+        -webkit-tap-highlight-color: rgba(255, 215, 0, 0.3);
+        -webkit-touch-callout: none;
+    }
 
     .main-header {
         font-family: 'Bangers', cursive;
         color: #FFD700;
-        font-size: 3rem;
+        font-size: clamp(1.8rem, 5vw, 3rem);
         text-align: center;
-        text-shadow: 3px 3px 0px #FF8E00, 6px 6px 0px #000;
-        margin-bottom: 2rem;
+        text-shadow: 2px 2px 0px #FF8E00, 4px 4px 0px #000;
+        margin-bottom: 1rem;
+        line-height: 1.2;
     }
 
     .sub-header {
         font-family: 'Bangers', cursive;
         color: #FF8E00;
-        font-size: 2rem;
+        font-size: clamp(1.3rem, 4vw, 2rem);
         text-shadow: 2px 2px 0px #000;
+        line-height: 1.3;
     }
 
     .comic-card {
         background-color: #16213e;
-        border: 4px solid #FFD700;
+        border: 3px solid #FFD700;
         border-radius: 10px;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        transform: rotate(-0.5deg);
-        box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        /* Removed rotation for mobile Safari compatibility */
+        box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
+        /* Enable hardware acceleration for better performance */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+
+    /* Desktop only: add slight rotation */
+    @media (min-width: 769px) {
+        .comic-card {
+            transform: rotate(-0.5deg) translateZ(0);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 4px solid #FFD700;
+        }
     }
 
     .stButton>button {
@@ -53,15 +75,34 @@ def load_css():
         font-weight: bold;
         border: 3px solid #000;
         border-radius: 8px;
-        padding: 0.5rem 2rem;
-        font-size: 1.1rem;
-        box-shadow: 3px 3px 0px #000;
+        padding: 0.75rem 1.5rem;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+        box-shadow: 2px 2px 0px #000;
         transition: all 0.2s;
+        /* Prevent text selection on touch */
+        -webkit-user-select: none;
+        user-select: none;
+        /* Ensure minimum touch target size */
+        min-height: 44px;
+        min-width: 44px;
+        cursor: pointer;
+        /* Hardware acceleration */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 
-    .stButton>button:hover {
-        transform: translate(2px, 2px);
+    /* Active state for touch devices (replaces hover) */
+    .stButton>button:active {
+        transform: translate(1px, 1px) translateZ(0);
         box-shadow: 1px 1px 0px #000;
+    }
+
+    /* Desktop hover effect */
+    @media (hover: hover) and (pointer: fine) {
+        .stButton>button:hover {
+            transform: translate(2px, 2px) translateZ(0);
+            box-shadow: 1px 1px 0px #000;
+        }
     }
 
     .detective-badge {
@@ -72,6 +113,7 @@ def load_css():
         display: inline-block;
         font-weight: bold;
         color: #1a1a2e;
+        font-size: clamp(0.9rem, 2vw, 1rem);
     }
 
     .clue-tag {
@@ -82,7 +124,7 @@ def load_css():
         border: 2px solid #000;
         display: inline-block;
         margin: 0.2rem;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
     }
 
     .suspect-card {
@@ -96,12 +138,220 @@ def load_css():
     /* Sidebar styling */
     [data-testid="stSidebar"] {
         background-color: #0f3460;
-        border-right: 4px solid #FFD700;
+        border-right: 3px solid #FFD700;
     }
 
     /* Progress bar styling */
     .stProgress > div > div > div > div {
         background-color: #FFD700;
+    }
+
+    /* Mobile Safari specific optimizations */
+    @media screen and (max-width: 768px) {
+        /* Improve readability on mobile */
+        body {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Optimize column layouts for mobile */
+        [data-testid="column"] {
+            padding: 0.25rem !important;
+        }
+
+        /* Make images responsive */
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        /* Optimize form inputs for mobile */
+        input, textarea, select {
+            font-size: 16px !important; /* Prevents zoom on iOS */
+            -webkit-appearance: none;
+            border-radius: 8px;
+        }
+
+        /* Improve touch targets */
+        .stButton>button {
+            padding: 1rem 1.5rem;
+            width: 100%;
+        }
+
+        /* Reduce margins on mobile */
+        .comic-card {
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+        }
+
+        /* Optimize sidebar for mobile */
+        [data-testid="stSidebar"] {
+            border-right: 2px solid #FFD700;
+        }
+
+        /* Make metrics more compact */
+        [data-testid="metric-container"] {
+            padding: 0.25rem !important;
+        }
+
+        /* Improve expander touch targets */
+        [data-testid="stExpander"] {
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+
+        /* Optimize tabs for mobile */
+        [data-testid="stTabs"] button {
+            font-size: 0.9rem !important;
+            padding: 0.5rem 0.75rem !important;
+        }
+    }
+
+    /* Tablet optimizations */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+        .main-header {
+            font-size: 2.5rem;
+        }
+
+        .comic-card {
+            padding: 1.25rem;
+        }
+
+        [data-testid="column"] {
+            padding: 0.5rem !important;
+        }
+    }
+
+    /* Landscape mobile optimizations */
+    @media screen and (max-width: 896px) and (orientation: landscape) {
+        .main-header {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comic-card {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+        }
+    }
+
+    /* Prevent iOS Safari bounce scroll issues */
+    .main {
+        overflow-x: hidden;
+    }
+
+    /* Smooth scrolling for iOS */
+    * {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Additional mobile optimizations for Streamlit-specific elements */
+    @media screen and (max-width: 768px) {
+        /* Force full-width containers on mobile */
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            max-width: 100% !important;
+        }
+
+        /* Optimize text inputs for mobile */
+        [data-testid="stTextInput"] input,
+        [data-testid="stTextArea"] textarea {
+            font-size: 16px !important;
+        }
+
+        /* Better spacing for form elements */
+        [data-testid="stForm"] {
+            padding: 0.5rem !important;
+        }
+
+        /* Improve selectbox display */
+        [data-testid="stSelectbox"] {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Better tab display on mobile */
+        [data-baseweb="tab-list"] {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        /* Optimize container spacing */
+        .element-container {
+            margin-bottom: 0.5rem !important;
+        }
+
+        /* Better image containers */
+        [data-testid="stImage"] {
+            margin: 0.25rem 0 !important;
+        }
+
+        /* Optimize expander spacing */
+        [data-testid="stExpander"] summary {
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+        }
+
+        /* Better multiselect on mobile */
+        [data-baseweb="select"] {
+            font-size: 16px !important;
+        }
+
+        /* Improve spinner visibility */
+        [data-testid="stSpinner"] {
+            padding: 1rem !important;
+        }
+
+        /* Better alert boxes on mobile */
+        [data-testid="stAlert"] {
+            padding: 0.75rem !important;
+            margin: 0.5rem 0 !important;
+        }
+
+        /* Optimize markdown content */
+        .stMarkdown {
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Better caption display */
+        .stCaption {
+            font-size: 0.85rem !important;
+        }
+
+        /* Improve code blocks on mobile */
+        pre {
+            font-size: 0.85rem !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+    }
+
+    /* iPhone specific optimizations */
+    @supports (-webkit-touch-callout: none) {
+        /* iOS Safari specific fixes */
+        input, textarea, select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        /* Fix for iOS Safari input zoom */
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea,
+        select {
+            font-size: 16px !important;
+        }
+
+        /* Better scrolling on iOS */
+        .main {
+            -webkit-overflow-scrolling: touch;
+        }
     }
     </style>
     """
