@@ -80,6 +80,7 @@ def load_custom_css():
             5px 5px 0px var(--secondary-color),
             10px 10px 20px var(--shadow);
         transition: transform 0.2s;
+        color: var(--text-dark);
     }
 
     .detective-card:hover {
@@ -247,24 +248,28 @@ def load_custom_css():
     [data-baseweb="notification"][kind="success"] {
         background-color: #D4EDDA;
         border-color: #28A745;
+        color: #155724;
     }
 
     /* Info alerts */
     [data-baseweb="notification"][kind="info"] {
         background-color: #D1ECF1;
         border-color: #17A2B8;
+        color: #0C5460;
     }
 
     /* Warning alerts */
     [data-baseweb="notification"][kind="warning"] {
         background-color: #FFF3CD;
         border-color: #FFC107;
+        color: #856404;
     }
 
     /* Error alerts */
     [data-baseweb="notification"][kind="error"] {
         background-color: #F8D7DA;
         border-color: #DC3545;
+        color: #721C24;
     }
 
     /* Mobile optimizations */
