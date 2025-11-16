@@ -26,9 +26,10 @@ LANGUAGE REQUIREMENTS:
 
 CREATE:
 1. A fun mystery with a title, short summary, school/home location, and time
-2. 4-6 simple clues that kids can understand
-3. 3-4 suspects (other children, teachers, or friendly adults - NO criminals)
+2. 4-6 INTERCONNECTED clues that kids can understand - each clue should connect to suspects and other clues
+3. 3-5 suspects (other children, teachers, or friendly adults - NO criminals)
 4. One suspect who did it (but they're not in trouble - just made a mistake or had good intentions)
+5. Include a single emoji for each suspect and clue that represents them visually
 
 EXAMPLE GOOD TOPICS:
 - Missing cookie recipe
@@ -38,8 +39,47 @@ EXAMPLE GOOD TOPICS:
 - Missing class pet (found safely)
 - Borrowed toy that wasn't returned
 
+INTERCONNECTED CLUES: Make sure clues relate to each other and point to different suspects. For example:
+- Clue 1: Chocolate crumbs near Jamie's desk
+- Clue 2: Jamie's fingers have chocolate on them
+- Clue 3: The cookie jar is on the wrong shelf (too high for Jamie to reach)
+- Clue 4: A step stool was found moved near the jar
+
 The mystery should be solvable by a 7-year-old using simple logic.
-Respond in a structured JSON format that can be parsed by Python."""
+
+REQUIRED JSON FORMAT:
+{
+  "case": {
+    "title": "The Mystery Title",
+    "description": "What happened",
+    "summary": "Short summary",
+    "difficulty": "easy",
+    "location": "School/Home",
+    "dateTime": "Morning/Afternoon"
+  },
+  "clues": [
+    {
+      "title": "Clue Name",
+      "description": "What it is",
+      "location": "Where found",
+      "type": "physical",
+      "relevance": "critical/important/minor",
+      "emoji": "🍪"
+    }
+  ],
+  "suspects": [
+    {
+      "name": "Name",
+      "description": "Who they are",
+      "background": "Their role",
+      "motive": "Why they might do it",
+      "alibi": "What they say",
+      "isGuilty": false,
+      "emoji": "👧"
+    }
+  ],
+  "solution": "Who did it and why"
+}"""
 
 CASE_GENERATION_PROMPT_TH = """คุณกำลังสร้างเรื่องสืบสวนสนุกๆ สำหรับเด็กอายุ 7 ขวบ (ระดับชั้นประถมศึกษาปีที่ 2-3)
 
@@ -99,13 +139,21 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
         system_prompt = CASE_GENERATION_PROMPT_TH if params.language == 'th' else CASE_GENERATION_PROMPT_EN
 
         # Create user prompt
-        if params.language == 'th':
-            user_prompt = f"สร้างคดีสืบสวนที่มีความยาก {params.difficulty}"
+        if params.custom_scenario:
+            # Use custom scenario if provided
+            if params.language == 'th':
+                user_prompt = f"สร้างคดีสืบสวนที่มีความยาก {params.difficulty} เกี่ยวกับ: {params.custom_scenario}"
+            else:
+                user_prompt = f"Create a {params.difficulty} difficulty detective case about: {params.custom_scenario}"
         else:
-            user_prompt = f"Create a {params.difficulty} difficulty detective case"
+            # Use standard parameters
+            if params.language == 'th':
+                user_prompt = f"สร้างคดีสืบสวนที่มีความยาก {params.difficulty}"
+            else:
+                user_prompt = f"Create a {params.difficulty} difficulty detective case"
 
-        if params.theme and params.theme != 'random':
-            user_prompt += f" with a {params.theme} theme" if params.language == 'en' else f" ในธีม {params.theme}"
+            if params.theme and params.theme != 'random':
+                user_prompt += f" with a {params.theme} theme" if params.language == 'en' else f" ในธีม {params.theme}"
 
         if params.location:
             user_prompt += f" set in {params.location}" if params.language == 'en' else f" ที่เกิดขึ้นใน {params.location}"
@@ -214,7 +262,8 @@ def format_generated_case(data: Dict[str, Any], language: str) -> GeneratedCase:
             type=clue_dict.get('type', 'physical'),
             discovered=False,
             examined=False,
-            relevance=clue_dict.get('relevance', clue_dict.get('significance', 'important'))
+            relevance=clue_dict.get('relevance', clue_dict.get('significance', 'important')),
+            emoji=clue_dict.get('emoji', '🔍')
         )
         clues.append(clue)
 
@@ -231,7 +280,8 @@ def format_generated_case(data: Dict[str, Any], language: str) -> GeneratedCase:
             motive=suspect_dict.get('motive', ''),
             alibi=suspect_dict.get('alibi', ''),
             isGuilty=suspect_dict.get('isGuilty', False),
-            interviewed=False
+            interviewed=False,
+            emoji=suspect_dict.get('emoji', '👤')
         )
         suspects.append(suspect)
 

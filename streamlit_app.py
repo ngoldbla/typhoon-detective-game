@@ -129,23 +129,8 @@ def main():
     # Header
     st.markdown('<h1 class="main-header">🔍 TYPHOON DETECTIVE GAME 🔍</h1>', unsafe_allow_html=True)
 
-    # Sidebar navigation
+    # Sidebar
     with st.sidebar:
-        st.markdown("### 🎮 Navigation")
-
-        if st.button("🏠 Home", use_container_width=True):
-            st.session_state.current_page = 'home'
-            st.rerun()
-
-        if st.button("📋 All Cases", use_container_width=True):
-            st.session_state.current_page = 'cases'
-            st.rerun()
-
-        if st.button("➕ New Case", use_container_width=True):
-            st.session_state.current_page = 'new_case'
-            st.rerun()
-
-        st.markdown("---")
         st.markdown("### ⚙️ Settings")
 
         language = st.selectbox(
@@ -170,26 +155,19 @@ def main():
         if total_cases > 0:
             st.progress(solved_cases / total_cases)
 
-    # Main content area - route to different pages
-    if st.session_state.current_page == 'home':
-        show_home_page()
-    elif st.session_state.current_page == 'cases':
-        show_cases_page()
-    elif st.session_state.current_page == 'new_case':
-        show_new_case_page()
-    elif st.session_state.current_page == 'case_details':
-        show_case_details_page()
-    elif st.session_state.current_page == 'suspect_interview':
-        show_suspect_interview_page()
-    elif st.session_state.current_page == 'clue_examination':
-        show_clue_examination_page()
-    elif st.session_state.current_page == 'solve_case':
-        show_solve_case_page()
-    elif st.session_state.current_page == 'how_to_play':
-        show_how_to_play_page()
+    # Main content - home page
+    show_home_page()
 
 def show_home_page():
     """Display the home page"""
+    # Show how to play if requested
+    if st.session_state.get('show_how_to_play', False):
+        show_how_to_play_page()
+        if st.button("← Back to Home"):
+            st.session_state.show_how_to_play = False
+            st.rerun()
+        return
+
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
@@ -220,9 +198,8 @@ def show_home_page():
                 st.markdown(f"_{active_case['description'][:150]}..._")
 
                 if st.button("Continue Case", key="continue_case", use_container_width=True):
-                    st.session_state.current_page = 'case_details'
                     st.session_state.selected_case_id = active_case['id']
-                    st.rerun()
+                    st.switch_page("pages/3_🔍_Case_Details.py")
                 st.markdown('</div>', unsafe_allow_html=True)
 
         # Quick actions
@@ -231,172 +208,13 @@ def show_home_page():
 
         with col_a:
             if st.button("🆕 Start New Case", use_container_width=True):
-                st.session_state.current_page = 'new_case'
-                st.rerun()
+                st.switch_page("pages/1_🆕_New_Case.py")
 
         with col_b:
             if st.button("📚 How to Play", use_container_width=True):
-                st.session_state.current_page = 'how_to_play'
+                st.session_state.show_how_to_play = True
                 st.rerun()
 
-def show_cases_page():
-    """Display all cases"""
-    st.markdown('<h2 class="sub-header">📋 All Cases</h2>', unsafe_allow_html=True)
-
-    if not st.session_state.cases:
-        st.info("No cases yet! Start a new case to begin your detective journey.")
-        if st.button("Create Your First Case"):
-            st.session_state.current_page = 'new_case'
-            st.rerun()
-        return
-
-    # Search and filter
-    search = st.text_input("🔍 Search cases...", placeholder="Enter case title or description")
-
-    # Display cases
-    for case in st.session_state.cases:
-        if search.lower() in case['title'].lower() or search.lower() in case['description'].lower():
-            with st.container():
-                st.markdown('<div class="comic-card">', unsafe_allow_html=True)
-
-                col1, col2 = st.columns([3, 1])
-
-                with col1:
-                    status = "✅ SOLVED" if case.get('solved', False) else "🔍 ACTIVE"
-                    st.markdown(f"### {case['title']} {status}")
-                    st.markdown(f"_{case['description'][:200]}..._")
-
-                    # Show progress
-                    total_clues = len(case.get('clues', []))
-                    examined = len([c for c in case.get('clues', []) if c['id'] in st.session_state.examined_clues])
-                    total_suspects = len(case.get('suspects', []))
-                    interviewed = len([s for s in case.get('suspects', []) if s['id'] in st.session_state.interviewed_suspects])
-
-                    st.markdown(f"🧩 Clues: {examined}/{total_clues} | 👥 Suspects: {interviewed}/{total_suspects}")
-
-                with col2:
-                    if st.button("View Case", key=f"view_{case['id']}", use_container_width=True):
-                        st.session_state.current_page = 'case_details'
-                        st.session_state.selected_case_id = case['id']
-                        st.rerun()
-
-                st.markdown('</div>', unsafe_allow_html=True)
-
-def show_new_case_page():
-    """Page for creating a new case"""
-    st.markdown('<h2 class="sub-header">➕ Generate New Case</h2>', unsafe_allow_html=True)
-
-    st.info("⚠️ This feature requires OpenAI API integration. Set up the Python libraries first.")
-
-    with st.form("new_case_form"):
-        st.markdown("### 🎨 Customize Your Mystery")
-
-        difficulty = st.select_slider(
-            "Difficulty Level",
-            options=["very_easy", "easy", "medium"],
-            value="easy"
-        )
-
-        theme = st.selectbox(
-            "Theme",
-            options=["school", "home", "playground", "pet", "toy", "random"],
-            index=5
-        )
-
-        location = st.text_input("Location (optional)", placeholder="e.g., Elementary School")
-
-        time_of_day = st.selectbox(
-            "Time of Day",
-            options=["morning", "afternoon", "evening", "random"],
-            index=3
-        )
-
-        submitted = st.form_submit_button("🎲 Generate Mystery", use_container_width=True)
-
-        if submitted:
-            st.warning("Case generation requires implementing the OpenAI integration in the next steps.")
-            # Placeholder for now
-            st.session_state.current_page = 'cases'
-            st.rerun()
-
-def show_case_details_page():
-    """Display detailed case information"""
-    case_id = st.session_state.get('selected_case_id')
-    if not case_id:
-        st.error("No case selected")
-        return
-
-    case = next((c for c in st.session_state.cases if c['id'] == case_id), None)
-    if not case:
-        st.error("Case not found")
-        return
-
-    st.markdown(f'<h2 class="sub-header">{case["title"]}</h2>', unsafe_allow_html=True)
-
-    # Case description
-    st.markdown('<div class="comic-card">', unsafe_allow_html=True)
-    st.markdown("### 📖 Case Description")
-    st.markdown(case['description'])
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Tabs for different sections
-    tab1, tab2, tab3 = st.tabs(["🧩 Clues", "👥 Suspects", "✅ Solve"])
-
-    with tab1:
-        st.markdown("### 🧩 Clues")
-        for clue in case.get('clues', []):
-            with st.container():
-                st.markdown('<div class="suspect-card">', unsafe_allow_html=True)
-                st.markdown(f"**{clue['description']}**")
-
-                if clue['id'] in st.session_state.examined_clues:
-                    st.success("✓ Examined")
-                else:
-                    if st.button("🔍 Examine Clue", key=f"examine_{clue['id']}"):
-                        st.session_state.current_page = 'clue_examination'
-                        st.session_state.selected_clue_id = clue['id']
-                        st.rerun()
-
-                st.markdown('</div>', unsafe_allow_html=True)
-
-    with tab2:
-        st.markdown("### 👥 Suspects")
-        for suspect in case.get('suspects', []):
-            with st.container():
-                st.markdown('<div class="suspect-card">', unsafe_allow_html=True)
-                st.markdown(f"**{suspect['name']}** - {suspect['role']}")
-                st.markdown(f"_{suspect['alibi']}_")
-
-                if suspect['id'] in st.session_state.interviewed_suspects:
-                    st.success("✓ Interviewed")
-                else:
-                    if st.button("💬 Interview", key=f"interview_{suspect['id']}"):
-                        st.session_state.current_page = 'suspect_interview'
-                        st.session_state.selected_suspect_id = suspect['id']
-                        st.rerun()
-
-                st.markdown('</div>', unsafe_allow_html=True)
-
-    with tab3:
-        st.markdown("### ✅ Ready to Solve?")
-        if st.button("Submit Solution", use_container_width=True):
-            st.session_state.current_page = 'solve_case'
-            st.rerun()
-
-def show_suspect_interview_page():
-    """Interview a suspect"""
-    st.markdown('<h2 class="sub-header">💬 Suspect Interview</h2>', unsafe_allow_html=True)
-    st.info("⚠️ This feature requires OpenAI API integration.")
-
-def show_clue_examination_page():
-    """Examine a clue"""
-    st.markdown('<h2 class="sub-header">🔍 Clue Examination</h2>', unsafe_allow_html=True)
-    st.info("⚠️ This feature requires OpenAI API integration.")
-
-def show_solve_case_page():
-    """Solve the case"""
-    st.markdown('<h2 class="sub-header">✅ Solve the Case</h2>', unsafe_allow_html=True)
-    st.info("⚠️ This feature requires OpenAI API integration.")
 
 def show_how_to_play_page():
     """Show how to play instructions"""

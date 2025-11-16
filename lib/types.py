@@ -33,6 +33,7 @@ class Clue:
     discovered: bool = False
     examined: bool = False
     relevance: str = "important"
+    emoji: str = "🔍"
 
 
 @dataclass
@@ -47,6 +48,7 @@ class Suspect:
     alibi: str = ""
     isGuilty: bool = False
     interviewed: bool = False
+    emoji: str = "👤"
 
 
 @dataclass
@@ -125,3 +127,4 @@ class CaseGenerationParams:
     location: str = ""
     era: str = ""
     language: str = "en"
+    custom_scenario: str = ""

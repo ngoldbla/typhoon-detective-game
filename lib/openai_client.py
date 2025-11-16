@@ -85,6 +85,11 @@ class OpenAIClient:
         """
         model = model or self.default_model
 
+        # GPT-5 models only support temperature=1
+        # Adjust temperature if using gpt-5
+        if 'gpt-5' in model.lower():
+            temperature = 1.0
+
         try:
             response = self.client.chat.completions.create(
                 model=model,
