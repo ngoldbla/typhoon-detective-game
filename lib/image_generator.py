@@ -202,8 +202,9 @@ def download_and_store_image(image_url: str, item_type: str, item_id: str) -> by
 
         image_data = response.content
 
-        # Store in database
-        save_image_data(item_type, item_id, image_data, image_url)
+        # Store in database with constructed URL identifier
+        url_identifier = f"{item_type}/{item_id}"
+        save_image_data(url_identifier, image_data)
 
         return image_data
     except Exception as e:

@@ -49,6 +49,22 @@ def load_custom_css():
         box-shadow: 3px 3px 0px #2C3E50;
     }
 
+    /* Sidebar styling for better contrast */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #FFF9F0 0%, #FFE8CC 100%);
+        border-right: 4px solid var(--primary-color);
+    }
+
+    [data-testid="stSidebar"] a,
+    [data-testid="stSidebar"] [data-testid="stPageLink-NavLink"],
+    [data-testid="stSidebar"] [role="link"],
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label {
+        color: #2C3E50 !important;
+        font-weight: bold !important;
+    }
+
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}

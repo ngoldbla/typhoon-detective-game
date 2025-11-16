@@ -100,6 +100,22 @@ def load_custom_css():
         box-shadow: 5px 5px 0px var(--secondary-color);
     }
 
+    /* Sidebar styling for better contrast */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #FFF9F0 0%, #FFE8CC 100%);
+        border-right: 4px solid var(--primary-color);
+    }
+
+    [data-testid="stSidebar"] a,
+    [data-testid="stSidebar"] [data-testid="stPageLink-NavLink"],
+    [data-testid="stSidebar"] [role="link"],
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label {
+        color: #2C3E50 !important;
+        font-weight: bold !important;
+    }
+
     .chat-message {
         padding: 1rem;
         border-radius: 10px;
@@ -173,9 +189,10 @@ st.markdown(f"""
 # Case description with image
 with st.expander("📖 Case Description", expanded=True):
     # Try to load case image from database
-    image_data = get_image_data('case', case_id)
+    url_identifier = f"case/{case_id}"
+    image_data = get_image_data(url_identifier)
     if image_data:
-        data_uri = get_image_data_uri(image_data)
+        data_uri = get_image_data_uri(image_data['data'])
         st.markdown(f'<img src="{data_uri}" style="width: 100%; max-height: 400px; object-fit: cover;">',
                    unsafe_allow_html=True)
     elif case.get('imageUrl') and case['imageUrl'] not in ["/case-file.png", ""]:
@@ -218,12 +235,13 @@ with tab1:
                 st.markdown('<div class="detective-card">', unsafe_allow_html=True)
 
                 # Layout with image if available
-                image_data = get_image_data('clue', clue_dict['id'])
+                url_identifier = f"clue/{clue_dict['id']}"
+                image_data = get_image_data(url_identifier)
                 if image_data or clue_dict.get('imageUrl'):
                     col_img, col_content = st.columns([1, 2])
                     with col_img:
                         if image_data:
-                            data_uri = get_image_data_uri(image_data)
+                            data_uri = get_image_data_uri(image_data['data'])
                             st.markdown(f'<img src="{data_uri}" style="width: 100%;">',
                                        unsafe_allow_html=True)
                         elif clue_dict.get('imageUrl'):
@@ -295,8 +313,8 @@ with tab1:
                                     'connections': [asdict(c) for c in analysis.connections],
                                     'nextSteps': analysis.nextSteps
                                 }
-                                save_clue_analysis(clue_dict['id'], analysis_dict)
-                                mark_clue_examined(case_id, clue_dict['id'])
+                                save_clue_analysis(clue_dict['id'], case_id, analysis_dict)
+                                mark_clue_examined(clue_dict['id'])
 
                                 # Play sound effect
                                 if st.session_state.audio_settings.get('sounds_enabled', True):
@@ -322,12 +340,13 @@ with tab2:
                 st.markdown('<div class="detective-card">', unsafe_allow_html=True)
 
                 # Layout with portrait if available
-                image_data = get_image_data('suspect', suspect_dict['id'])
+                url_identifier = f"suspect/{suspect_dict['id']}"
+                image_data = get_image_data(url_identifier)
                 if image_data or suspect_dict.get('imageUrl'):
                     col_img, col_content = st.columns([1, 2])
                     with col_img:
                         if image_data:
-                            data_uri = get_image_data_uri(image_data)
+                            data_uri = get_image_data_uri(image_data['data'])
                             st.markdown(f'<img src="{data_uri}" style="width: 100%;">',
                                        unsafe_allow_html=True)
                         elif suspect_dict.get('imageUrl'):
@@ -455,8 +474,8 @@ with tab2:
                                         )
 
                                         # Save to database
-                                        save_interview(suspect_dict['id'], question, answer)
-                                        mark_suspect_interviewed(case_id, suspect_dict['id'])
+                                        save_interview(suspect_dict['id'], case_id, question, answer)
+                                        mark_suspect_interviewed(suspect_dict['id'])
 
                                         # Clear question input
                                         if f'question_{suspect_dict["id"]}' in st.session_state:
