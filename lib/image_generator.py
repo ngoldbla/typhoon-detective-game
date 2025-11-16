@@ -1,7 +1,11 @@
 """Image generation utilities for Typhoon Detective Game"""
 
 from typing import Optional
+import requests
+import base64
+from io import BytesIO
 from lib.openai_client import get_openai_client
+from lib.database import save_image_data, get_image_data
 
 
 def generate_case_scene(
@@ -180,14 +184,60 @@ No text or labels in the image."""
         raise
 
 
+def download_and_store_image(image_url: str, item_type: str, item_id: str) -> bytes:
+    """Download an image from URL and store it in the database
+
+    Args:
+        image_url: URL of the image to download
+        item_type: Type of item ('case', 'clue', or 'suspect')
+        item_id: ID of the item
+
+    Returns:
+        Binary image data
+    """
+    try:
+        # Download the image
+        response = requests.get(image_url, timeout=30)
+        response.raise_for_status()
+
+        image_data = response.content
+
+        # Store in database
+        save_image_data(item_type, item_id, image_data, image_url)
+
+        return image_data
+    except Exception as e:
+        print(f"Failed to download and store image: {e}")
+        raise
+
+
+def get_image_data_uri(image_data: bytes) -> str:
+    """Convert binary image data to a data URI for display
+
+    Args:
+        image_data: Binary image data
+
+    Returns:
+        Data URI string
+    """
+    if not image_data:
+        return ""
+
+    # Encode as base64
+    encoded = base64.b64encode(image_data).decode('utf-8')
+
+    # Return as data URI (assuming PNG, could be more sophisticated)
+    return f"data:image/png;base64,{encoded}"
+
+
 def generate_all_case_images(case_data: dict, generate_scene: bool = True) -> dict:
-    """Generate all images for a case
+    """Generate all images for a case and store them in the database
 
     Args:
         case_data: Dictionary containing case information with keys:
-            - title, description, location, difficulty
-            - suspects: list of suspect dicts
-            - clues: list of clue dicts
+            - id, title, description, location, difficulty
+            - suspects: list of suspect dicts with 'id' field
+            - clues: list of clue dicts with 'id' field
         generate_scene: Whether to generate the main scene image
 
     Returns:
@@ -199,12 +249,19 @@ def generate_all_case_images(case_data: dict, generate_scene: bool = True) -> di
         # Generate scene image
         if generate_scene:
             print(f"Generating scene image for: {case_data.get('title', 'Unknown Case')}")
-            images['scene'] = generate_case_scene(
+            scene_url = generate_case_scene(
                 title=case_data['title'],
                 description=case_data['description'],
                 location=case_data['location'],
                 difficulty=case_data.get('difficulty', 'Medium')
             )
+            images['scene'] = scene_url
+
+            # Download and store the image
+            try:
+                download_and_store_image(scene_url, 'case', case_data['id'])
+            except Exception as e:
+                print(f"Failed to download scene image: {e}")
 
         # Generate suspect portraits
         images['suspects'] = []
@@ -218,6 +275,13 @@ def generate_all_case_images(case_data: dict, generate_scene: bool = True) -> di
                     relationship_to_victim=suspect.get('relationshipToVictim')
                 )
                 images['suspects'].append(portrait_url)
+
+                # Download and store the image
+                try:
+                    download_and_store_image(portrait_url, 'suspect', suspect['id'])
+                except Exception as e:
+                    print(f"Failed to download portrait for {suspect.get('name')}: {e}")
+
             except Exception as e:
                 print(f"Failed to generate portrait for {suspect.get('name')}: {e}")
                 images['suspects'].append(None)
@@ -233,6 +297,13 @@ def generate_all_case_images(case_data: dict, generate_scene: bool = True) -> di
                     location_found=clue.get('location', 'Unknown location')
                 )
                 images['clues'].append(clue_url)
+
+                # Download and store the image
+                try:
+                    download_and_store_image(clue_url, 'clue', clue['id'])
+                except Exception as e:
+                    print(f"Failed to download clue image for {clue.get('title')}: {e}")
+
             except Exception as e:
                 print(f"Failed to generate visualization for {clue.get('title')}: {e}")
                 images['clues'].append(None)
