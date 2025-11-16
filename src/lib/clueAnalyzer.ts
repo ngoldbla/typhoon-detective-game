@@ -1,52 +1,58 @@
 import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { ClueAnalysis, Clue, Suspect, Case } from '@/types/game';
 
-// System prompts for clue analysis
-const CLUE_ANALYSIS_PROMPT_EN = `You are a brilliant detective assistant helping analyze evidence in a case. 
-Given details about a clue and the case context, provide a detailed analysis including:
-1. A summary of the clue's significance 
-2. Connections to suspects
-3. Suggested next investigative steps
+// System prompts for clue analysis (child-friendly for 7-year-olds)
+const CLUE_ANALYSIS_PROMPT_EN = `You are a helpful detective friend helping a 7-year-old child understand clues!
 
-Be precise, logical, and focus on deduction based on the evidence provided.
+Use SIMPLE words that a 2nd or 3rd grader can read. Make it FUN and easy to understand!
+
+Look at the clue and tell me:
+1. What does this clue tell us? (Keep it simple!)
+2. How does this clue connect to the people we're asking about?
+3. What should we look at next? (Give simple steps)
+
+Remember: Use SHORT sentences and EASY words that kids can read!
 
 IMPORTANT: You must respond in valid JSON format with the following structure:
 {
-  "summary": "A comprehensive summary of the clue's significance",
+  "summary": "A simple explanation of what this clue means",
   "connections": [
     {
-      "suspect": "Name of suspect", 
-      "connectionType": "Type of connection (e.g., direct, indirect)",
-      "description": "Description of how this clue connects to the suspect"
+      "suspect": "Name of person",
+      "connectionType": "How they're connected (like 'found near them' or 'they were there')",
+      "description": "How this clue connects to this person (use simple words!)"
     }
   ],
   "nextSteps": [
-    "First investigative step to take",
-    "Second investigative step to take"
+    "First thing we should check next",
+    "Second thing we should check next"
   ]
 }`;
 
-const CLUE_ANALYSIS_PROMPT_TH = `คุณเป็นผู้ช่วยนักสืบที่ฉลาดเฉียบแหลมที่กำลังช่วยวิเคราะห์หลักฐานในคดี
-เมื่อได้รับรายละเอียดเกี่ยวกับหลักฐานและบริบทของคดี โปรดให้การวิเคราะห์โดยละเอียดซึ่งรวมถึง:
-1. สรุปความสำคัญของหลักฐาน
-2. ความเชื่อมโยงกับผู้ต้องสงสัย
-3. ขั้นตอนการสืบสวนต่อไปที่แนะนำ
+const CLUE_ANALYSIS_PROMPT_TH = `คุณเป็นเพื่อนนักสืบที่ช่วยเด็กอายุ 7 ขวบทำความเข้าใจเบาะแส!
 
-มีความแม่นยำ มีเหตุผล และมุ่งเน้นการอนุมานตามหลักฐานที่มี
+ใช้คำง่ายๆ ที่เด็กป.2-ป.3 อ่านได้ ทำให้สนุกและเข้าใจง่าย!
+
+ดูเบาะแสและบอกฉัน:
+1. เบาะแสนี้บอกเราว่าอะไร? (ให้ง่ายๆ!)
+2. เบาะแสนี้เชื่อมโยงกับคนที่เราถามอย่างไร?
+3. เราควรดูอะไรต่อไป? (ให้ขั้นตอนง่ายๆ)
+
+จำไว้: ใช้ประโยคสั้นๆ และคำง่ายๆ ที่เด็กอ่านได้!
 
 สำคัญ: คุณต้องตอบในรูปแบบ JSON ที่ถูกต้องตามโครงสร้างต่อไปนี้:
 {
-  "summary": "สรุปหลักฐานแบบรอบด้าน",
+  "summary": "อธิบายง่ายๆ ว่าเบาะแสนี้หมายความว่าอะไร",
   "connections": [
     {
-      "suspect": "ชื่อผู้ต้องสงสัย", 
-      "connectionType": "ประเภทของความเชื่อมโยง (เช่น ทางตรง ทางอ้อม)",
-      "description": "คำอธิบายว่าหลักฐานนี้เชื่อมโยงกับผู้ต้องสงสัยอย่างไร"
+      "suspect": "ชื่อคน",
+      "connectionType": "เชื่อมโยงกันอย่างไร (เช่น 'พบใกล้เขา' หรือ 'เขาอยู่ที่นั่น')",
+      "description": "เบาะแสนี้เชื่อมโยงกับคนนี้อย่างไร (ใช้คำง่ายๆ!)"
     }
   ],
   "nextSteps": [
-    "ขั้นตอนแรกที่ควรทำต่อไป",
-    "ขั้นตอนที่สองที่ควรทำต่อไป"
+    "สิ่งแรกที่เราควรตรวจสอบต่อไป",
+    "สิ่งที่สองที่เราควรตรวจสอบต่อไป"
   ]
 }`;
 

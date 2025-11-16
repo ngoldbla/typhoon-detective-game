@@ -35,19 +35,19 @@ export default function SuspectPage({ params }: SuspectPageProps) {
     }[]>([]);
     const [suspectId, setSuspectId] = useState<string>('');
 
-    // Define language-specific predefined questions
+    // Define language-specific predefined questions (child-friendly for 7-year-olds)
     const predefinedQuestionsMap = {
         'en': [
-            'Where were you at the time of the incident?',
-            'Can you tell me about your relationship with the victim?',
-            'Do you have an alibi that can be verified?',
-            'Have you noticed anything unusual lately?'
+            'Where were you when this happened?',
+            'What were you doing at that time?',
+            'Did you see anything strange or different?',
+            'Can anyone say they saw you there?'
         ],
         'th': [
-            'คุณอยู่ที่ไหนในช่วงเวลาที่เกิดเหตุ?',
-            'คุณช่วยเล่าเกี่ยวกับความสัมพันธ์ของคุณกับผู้เสียหายได้ไหม?',
-            'คุณมีพยานยืนยันตัวตนที่สามารถตรวจสอบได้หรือไม่?',
-            'คุณสังเกตเห็นสิ่งผิดปกติอะไรบ้างในช่วงที่ผ่านมา?'
+            'คุณอยู่ที่ไหนตอนเกิดเรื่องนี้?',
+            'คุณทำอะไรอยู่ในเวลานั้น?',
+            'คุณเห็นอะไรแปลกๆ หรือไม่?',
+            'มีใครเห็นคุณอยู่ที่นั่นไหม?'
         ]
     };
 
