@@ -40,6 +40,7 @@ def load_custom_css():
         padding: 1.5rem;
         margin: 1rem 0;
         box-shadow: 5px 5px 0px var(--secondary-color);
+        color: #2C3E50;
     }
 
     .stButton>button {

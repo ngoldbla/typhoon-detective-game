@@ -62,6 +62,7 @@ def load_custom_css():
         padding: 1.5rem;
         margin: 1rem 0;
         box-shadow: 5px 5px 0px var(--secondary-color);
+        color: #2C3E50;
     }
 
     .stButton>button {
@@ -104,16 +105,19 @@ def load_custom_css():
         border-radius: 10px;
         margin: 0.5rem 0;
         font-family: 'Comic Neue', cursive;
+        color: #2C3E50;
     }
 
     .chat-question {
         background-color: #E3F2FD;
         border-left: 4px solid #2196F3;
+        color: #1565C0;
     }
 
     .chat-answer {
         background-color: #F1F8E9;
         border-left: 4px solid #8BC34A;
+        color: #2E7D32;
     }
 
     #MainMenu {visibility: hidden;}
@@ -568,10 +572,12 @@ with tab3:
                         <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
                                     padding: 2rem; border-radius: 15px; border: 4px solid #2E7D32;
                                     box-shadow: 5px 5px 0px #1B5E20; text-align: center;">
-                            <h2 style="color: white; font-family: 'Bangers', cursive; font-size: 2.5rem; margin: 0;">
+                            <h2 style="color: white; font-family: 'Bangers', cursive; font-size: 2.5rem; margin: 0;
+                                       text-shadow: 2px 2px 4px rgba(0,0,0,0.6);">
                                 🎉 CASE SOLVED! 🎉
                             </h2>
-                            <p style="color: white; font-size: 1.2rem; margin-top: 1rem;">
+                            <p style="color: white; font-size: 1.2rem; margin-top: 1rem;
+                                      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">
                                 Congratulations, Detective! You cracked the case!
                             </p>
                         </div>
@@ -588,10 +594,10 @@ with tab3:
                         <div style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
                                     padding: 2rem; border-radius: 15px; border: 4px solid #F57C00;
                                     box-shadow: 5px 5px 0px #E65100; text-align: center;">
-                            <h2 style="color: white; font-family: 'Bangers', cursive; font-size: 2.5rem; margin: 0;">
+                            <h2 style="color: #2C3E50; font-family: 'Bangers', cursive; font-size: 2.5rem; margin: 0;">
                                 🤔 NOT QUITE RIGHT
                             </h2>
-                            <p style="color: white; font-size: 1.2rem; margin-top: 1rem;">
+                            <p style="color: #2C3E50; font-size: 1.2rem; margin-top: 1rem;">
                                 Keep investigating! The truth is out there...
                             </p>
                         </div>
