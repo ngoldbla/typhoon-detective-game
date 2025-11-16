@@ -61,7 +61,8 @@ with tab1:
                 col1, col2 = st.columns([3, 1])
 
                 with col1:
-                    st.markdown(f"**{clue_dict['title']}**")
+                    clue_emoji = clue_dict.get('emoji', '🔍')
+                    st.markdown(f"{clue_emoji} **{clue_dict['title']}**")
                     st.markdown(f"_{clue_dict['description']}_")
                     st.caption(f"📍 Found at: {clue_dict['location']}")
 
@@ -147,7 +148,8 @@ with tab2:
                 col1, col2 = st.columns([3, 1])
 
                 with col1:
-                    st.markdown(f"**{suspect_dict['name']}**")
+                    suspect_emoji = suspect_dict.get('emoji', '👤')
+                    st.markdown(f"{suspect_emoji} **{suspect_dict['name']}**")
                     st.markdown(f"_{suspect_dict['description']}_")
                     st.caption(f"**Alibi:** {suspect_dict['alibi']}")
 
@@ -257,51 +259,52 @@ with tab3:
 
         submitted = st.form_submit_button("🎯 Submit Solution", use_container_width=True)
 
-        if submitted:
-            if not evidence_ids:
-                st.error("Please select at least one piece of evidence!")
-            elif not reasoning:
-                st.error("Please explain your reasoning!")
-            else:
-                with st.spinner("🔍 Evaluating your solution..."):
-                    try:
-                        case_obj = Case(
-                            id=case['id'],
-                            title=case['title'],
-                            description=case['description'],
-                            summary=case.get('summary', '')
-                        )
-                        suspects = [Suspect(**s) for s in case['suspects']]
-                        clues = [Clue(**c) for c in case['clues']]
+    # Handle form submission outside the form context
+    if submitted:
+        if not evidence_ids:
+            st.error("Please select at least one piece of evidence!")
+        elif not reasoning:
+            st.error("Please explain your reasoning!")
+        else:
+            with st.spinner("🔍 Evaluating your solution..."):
+                try:
+                    case_obj = Case(
+                        id=case['id'],
+                        title=case['title'],
+                        description=case['description'],
+                        summary=case.get('summary', '')
+                    )
+                    suspects = [Suspect(**s) for s in case['suspects']]
+                    clues = [Clue(**c) for c in case['clues']]
 
-                        # Analyze solution
-                        solution = analyze_solution(
-                            case_obj,
-                            suspects,
-                            clues,
-                            accused_id,
-                            evidence_ids,
-                            reasoning,
-                            st.session_state.get('language', 'en')
-                        )
+                    # Analyze solution
+                    solution = analyze_solution(
+                        case_obj,
+                        suspects,
+                        clues,
+                        accused_id,
+                        evidence_ids,
+                        reasoning,
+                        st.session_state.get('language', 'en')
+                    )
 
-                        # Show result
-                        if solution.solved:
-                            st.success("🎉 Congratulations! You solved the case!")
-                            st.balloons()
-                            case['solved'] = True
-                        else:
-                            st.warning("🤔 Not quite right. Keep investigating!")
+                    # Show result
+                    if solution.solved:
+                        st.success("🎉 Congratulations! You solved the case!")
+                        st.balloons()
+                        case['solved'] = True
+                    else:
+                        st.warning("🤔 Not quite right. Keep investigating!")
 
-                        st.markdown("### 📝 Verdict")
-                        st.markdown(solution.narrative)
+                    st.markdown("### 📝 Verdict")
+                    st.markdown(solution.narrative)
 
-                        if solution.solved:
-                            if st.button("🏠 Return Home"):
-                                st.switch_page("streamlit_app.py")
+                    if solution.solved:
+                        if st.button("🏠 Return Home"):
+                            st.switch_page("streamlit_app.py")
 
-                    except Exception as e:
-                        st.error(f"Failed to evaluate solution: {str(e)}")
+                except Exception as e:
+                    st.error(f"Failed to evaluate solution: {str(e)}")
 
 # Back button
 st.markdown("---")

@@ -24,6 +24,16 @@ if 'just_generated_case' not in st.session_state:
 with st.form("new_case_form"):
     st.markdown("### 🎨 Customize Your Mystery")
 
+    # Custom scenario field
+    custom_scenario = st.text_area(
+        "Custom Mystery Scenario (optional)",
+        placeholder="e.g., Someone stole the gummy worms from my lunchbox at school",
+        help="Describe your own mystery scenario, or leave blank to use the theme options below",
+        height=80
+    )
+
+    st.markdown("#### Or choose from preset options:")
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -38,7 +48,7 @@ with st.form("new_case_form"):
             "Theme",
             options=["random", "school", "home", "playground", "pet", "toy"],
             index=0,
-            help="Pick a theme for your mystery"
+            help="Pick a theme for your mystery (ignored if custom scenario is provided)"
         )
 
     with col2:
@@ -67,7 +77,8 @@ if submitted:
                 theme=theme if theme != "random" else "",
                 location=location,
                 era=time_of_day if time_of_day != "random" else "",
-                language=language
+                language=language,
+                custom_scenario=custom_scenario.strip() if custom_scenario else ""
             )
 
             # Generate the case
