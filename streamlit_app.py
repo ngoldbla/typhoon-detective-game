@@ -5,6 +5,12 @@ An interactive detective game powered by OpenAI
 
 import streamlit as st
 from lib.database import get_all_cases, get_examined_clues, get_interviewed_suspects
+from lib.audio_utils import (
+    get_tts_component,
+    get_speech_recognition_component,
+    get_sound_effect,
+    play_celebration_sound
+)
 
 # Page configuration with custom branding
 st.set_page_config(
@@ -662,6 +668,61 @@ def main():
             progress = solved_cases / total_cases
             st.progress(progress)
             st.caption(f"{int(progress * 100)}% Cases Solved")
+
+        st.markdown("---")
+
+        # Debug/Dev Menu
+        with st.expander("🛠️ Audio Debug Menu", expanded=False):
+            st.markdown("**Test Audio Features:**")
+
+            # TTS Test
+            st.markdown("**🔊 Text-to-Speech:**")
+            if st.button("Test TTS", key="debug_tts", use_container_width=True):
+                test_text = "Hello detective! This is a test of the text-to-speech system. The mystery awaits!"
+                st.markdown(
+                    get_tts_component(test_text, "🔊 Play Test Audio"),
+                    unsafe_allow_html=True
+                )
+
+            st.markdown("---")
+
+            # Voice Dictation Test
+            st.markdown("**🎤 Voice Dictation:**")
+            st.markdown(
+                get_speech_recognition_component("debug_voice", "Test dictation here..."),
+                unsafe_allow_html=True
+            )
+            test_input = st.text_input(
+                "Test dictation here...",
+                key="debug_dictation_input",
+                placeholder="Click the mic button above to test"
+            )
+            if test_input:
+                st.success(f"✅ Captured: {test_input}")
+
+            st.markdown("---")
+
+            # Sound Effects Test
+            st.markdown("**🎵 Sound Effects:**")
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                if st.button("🔍 Clue", key="debug_clue", use_container_width=True):
+                    st.markdown(get_sound_effect('clue'), unsafe_allow_html=True)
+                    st.caption("Discovery tone")
+
+            with col2:
+                if st.button("✅ Success", key="debug_success", use_container_width=True):
+                    st.markdown(play_celebration_sound(), unsafe_allow_html=True)
+                    st.caption("Victory chord")
+
+            with col3:
+                if st.button("❌ Error", key="debug_error", use_container_width=True):
+                    st.markdown(get_sound_effect('error'), unsafe_allow_html=True)
+                    st.caption("Alert buzz")
+
+            st.markdown("---")
+            st.caption("💡 **Tip:** Check audio settings above to enable/disable features")
 
         st.markdown("---")
 
