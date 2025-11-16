@@ -2,9 +2,10 @@
 
 import json
 import re
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from lib.types import Case, Clue, Suspect, GeneratedCase, CaseGenerationParams
 from lib.openai_client import fetch_openai_completion
+from lib.image_generator import generate_case_scene, generate_suspect_portrait, generate_clue_visualization
 import uuid
 
 
@@ -125,11 +126,12 @@ FALLBACK_CASE = {
 }
 
 
-def generate_case(params: CaseGenerationParams) -> GeneratedCase:
+def generate_case(params: CaseGenerationParams, generate_images: bool = True) -> GeneratedCase:
     """Generate a detective case using OpenAI
 
     Args:
         params: Case generation parameters
+        generate_images: Whether to generate AI images for the case (default: True)
 
     Returns:
         A generated case with clues and suspects
@@ -180,7 +182,7 @@ def generate_case(params: CaseGenerationParams) -> GeneratedCase:
         parsed_data = parse_json_response(response)
 
         # Format into our data structure
-        return format_generated_case(parsed_data, params.language)
+        return format_generated_case(parsed_data, params.language, generate_images)
 
     except Exception as e:
         error_msg = str(e)
@@ -226,12 +228,13 @@ def parse_json_response(response: str) -> Dict[str, Any]:
         raise ValueError("Failed to parse the generated case data")
 
 
-def format_generated_case(data: Dict[str, Any], language: str) -> GeneratedCase:
+def format_generated_case(data: Dict[str, Any], language: str, generate_images: bool = True) -> GeneratedCase:
     """Format raw LLM output into GeneratedCase structure
 
     Args:
         data: Raw parsed JSON data
         language: Language code
+        generate_images: Whether to generate AI images for the case
 
     Returns:
         Formatted GeneratedCase
@@ -295,6 +298,55 @@ def format_generated_case(data: Dict[str, Any], language: str) -> GeneratedCase:
     # Ensure at least one suspect is guilty
     if suspects and not any(s.isGuilty for s in suspects):
         suspects[0].isGuilty = True
+
+    # Generate images if requested
+    if generate_images:
+        print("Generating AI images for the case...")
+        try:
+            # Generate scene image for the case
+            print(f"Generating scene image for: {case.title}")
+            case.imageUrl = generate_case_scene(
+                title=case.title,
+                description=case.description,
+                location=case.location,
+                difficulty=case.difficulty
+            )
+            print(f"✓ Scene image generated successfully")
+        except Exception as e:
+            print(f"⚠ Failed to generate scene image: {e}")
+            case.imageUrl = "/case-file.png"
+
+        # Generate suspect portraits
+        for i, suspect in enumerate(suspects):
+            try:
+                print(f"Generating portrait for suspect {i+1}/{len(suspects)}: {suspect.name}")
+                suspect.imageUrl = generate_suspect_portrait(
+                    name=suspect.name,
+                    description=suspect.description,
+                    alibi=suspect.alibi,
+                    relationship_to_victim=suspect.background
+                )
+                print(f"✓ Portrait generated for {suspect.name}")
+            except Exception as e:
+                print(f"⚠ Failed to generate portrait for {suspect.name}: {e}")
+                suspect.imageUrl = None
+
+        # Generate clue visualizations
+        for i, clue in enumerate(clues):
+            try:
+                print(f"Generating visualization for clue {i+1}/{len(clues)}: {clue.title}")
+                clue.imageUrl = generate_clue_visualization(
+                    title=clue.title,
+                    description=clue.description,
+                    location_found=clue.location,
+                    clue_type=clue.type
+                )
+                print(f"✓ Visualization generated for {clue.title}")
+            except Exception as e:
+                print(f"⚠ Failed to generate visualization for {clue.title}: {e}")
+                clue.imageUrl = None
+
+        print("Image generation complete!")
 
     return GeneratedCase(
         case=case,

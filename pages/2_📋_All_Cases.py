@@ -48,7 +48,14 @@ else:
             continue
 
         with st.container():
-            col1, col2 = st.columns([4, 1])
+            # Show thumbnail if available
+            if case.get('imageUrl') and case['imageUrl'] != "/case-file.png":
+                col_img, col_content, col_btn = st.columns([1, 3, 1])
+                with col_img:
+                    st.image(case['imageUrl'], use_container_width=True)
+                col1, col2 = col_content, col_btn
+            else:
+                col1, col2 = st.columns([4, 1])
 
             with col1:
                 # Status display
