@@ -81,7 +81,8 @@ if submitted:
                 custom_scenario=custom_scenario.strip() if custom_scenario else ""
             )
 
-            # Generate the case
+            # Generate the case (with images by default)
+            st.info("🎨 Generating case and AI artwork... This may take a minute.")
             generated_case = generate_case(params)
 
             # Convert to dict for storage
@@ -94,6 +95,7 @@ if submitted:
                 'solved': False,
                 'location': generated_case.case.location,
                 'dateTime': generated_case.case.dateTime,
+                'imageUrl': generated_case.case.imageUrl,  # Add case scene image
                 'clues': [asdict(c) for c in generated_case.clues],
                 'suspects': [asdict(s) for s in generated_case.suspects],
                 'solution': generated_case.solution
@@ -118,6 +120,11 @@ if st.session_state.just_generated_case:
 
     st.markdown("---")
     st.markdown(f"## {case_dict['title']}")
+
+    # Display case scene image if available
+    if case_dict.get('imageUrl') and case_dict['imageUrl'] != "/case-file.png":
+        st.image(case_dict['imageUrl'], use_container_width=True, caption="Case Scene")
+
     st.markdown(f"_{case_dict['description']}_")
 
     st.markdown(f"**Location:** {case_dict['location']}")

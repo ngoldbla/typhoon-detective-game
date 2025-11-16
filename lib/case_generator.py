@@ -300,6 +300,8 @@ def format_generated_case(data: Dict[str, Any], language: str, generate_images: 
         suspects[0].isGuilty = True
 
     # Generate images if requested
+    # NOTE: OpenAI image URLs are temporary and expire after ~1 hour
+    # For production use, download and store images locally or in cloud storage
     if generate_images:
         print("Generating AI images for the case...")
         try:

@@ -10,10 +10,11 @@ An AI-powered interactive detective mystery game for children (ages 7+), built w
 ## 🌟 Features
 
 - **🎲 AI-Generated Cases** - Create unique detective mysteries using OpenAI's GPT models
+- **🎨 AI-Generated Art** - Beautiful scene, suspect, and clue images powered by DALL-E
 - **🔍 Smart Clue Analysis** - AI helps analyze evidence and find connections
 - **💬 Dynamic Interviews** - Have natural conversations with AI-powered suspects
 - **✅ Solution Evaluation** - AI evaluates your detective work and reasoning
-- **🎨 Comic Book UI** - Fun, child-friendly interface with comic styling
+- **🎭 Comic Book UI** - Fun, child-friendly interface with comic styling
 - **🌍 Bilingual Support** - Available in English and Thai
 - **📊 Progress Tracking** - Track examined clues and interviewed suspects
 - **🛡️ Child-Safe Content** - All mysteries are age-appropriate (no violence/scary content)
@@ -224,6 +225,14 @@ MIT License - See LICENSE file for details
 - Verify API key is valid
 - Check you have OpenAI credits
 - Try `gpt-4o-mini` (cheaper)
+
+### Images not appearing or disappearing after an hour
+- **Known Limitation**: OpenAI image URLs are temporary and expire after ~1 hour
+- Images will display correctly immediately after generation
+- For production use with persistent images, you would need to:
+  - Download images and save them locally, OR
+  - Upload them to cloud storage (S3, Cloudinary, etc.)
+- Current implementation prioritizes simplicity over persistence
 
 ### Railway deployment issues
 - Check environment variables are set
