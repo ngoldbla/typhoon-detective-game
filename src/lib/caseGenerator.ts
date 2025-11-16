@@ -3,76 +3,122 @@ import { fetchOpenAICompletion, OpenAIMessage } from './typhoon';
 import { CaseGenerationParams, GeneratedCase, Case, Clue, Suspect } from '@/types/game';
 
 // System prompt templates for case generation
-const CASE_GENERATION_PROMPT_EN = `You are a master detective story creator. Create a complete detective case with the following:
-1. A detailed case description with a title, summary, location, date, and time.
-2. 5-8 clues with descriptions, locations, and relevance.
-3. 3-5 suspects with names, descriptions, backgrounds, motives, and alibis.
-4. A clear solution identifying which suspect is guilty and why.
+const CASE_GENERATION_PROMPT_EN = `You are creating fun detective stories for 7-year-old children (2nd/3rd grade reading level).
 
-The case should be logical, solvable through deduction, and have clear connections between clues and suspects.
+CRITICAL SAFETY RULES - YOU MUST FOLLOW THESE:
+❌ NO violence, weapons, death, murder, or killing
+❌ NO scary or frightening content
+❌ NO adult themes (divorce, gambling, drugs, alcohol, etc.)
+❌ NO harm to people or animals
+✅ ONLY mysteries about: lost items, missing pets (that are found safe), harmless pranks, switched belongings, or simple school mysteries
+
+LANGUAGE REQUIREMENTS:
+- Use ONLY simple words a 7-year-old can read
+- Keep sentences SHORT (under 15 words)
+- Make it FUN and cheerful, not scary
+- Use concrete, not abstract concepts
+
+CREATE:
+1. A fun mystery with a title, short summary, school/home location, and time
+2. 4-6 simple clues that kids can understand
+3. 3-4 suspects (other children, teachers, or friendly adults - NO criminals)
+4. One suspect who did it (but they're not in trouble - just made a mistake or had good intentions)
+
+EXAMPLE GOOD TOPICS:
+- Missing cookie recipe
+- Lost homework
+- Switched lunch boxes
+- Who drew on the chalkboard
+- Missing class pet (found safely)
+- Borrowed toy that wasn't returned
+
+The mystery should be solvable by a 7-year-old using simple logic.
 Respond in a structured JSON format that can be parsed by JavaScript.`;
 
-const CASE_GENERATION_PROMPT_TH = `คุณเป็นนักเขียนนิยายสืบสวนชั้นเยี่ยม สร้างคดีสืบสวนที่สมบูรณ์โดยมีองค์ประกอบดังนี้:
-1. รายละเอียดคดีพร้อมชื่อเรื่อง สรุปย่อ สถานที่ วันที่ และเวลา
-2. 5-8 หลักฐานพร้อมคำอธิบาย ตำแหน่งที่พบ และความสำคัญ
-3. 3-5 ผู้ต้องสงสัยพร้อมชื่อ คำอธิบาย ประวัติ แรงจูงใจ และข้ออ้างที่อยู่
-4. คำตอบที่ชัดเจนว่าผู้ต้องสงสัยคนไหนเป็นผู้กระทำผิดและเพราะอะไร
+const CASE_GENERATION_PROMPT_TH = `คุณกำลังสร้างเรื่องสืบสวนสนุกๆ สำหรับเด็กอายุ 7 ขวบ (ระดับชั้นประถมศึกษาปีที่ 2-3)
 
-คดีควรมีเหตุผล สามารถแก้ไขได้ด้วยการอนุมาน และมีความเชื่อมโยงที่ชัดเจนระหว่างหลักฐานและผู้ต้องสงสัย
-ตอบในรูปแบบ JSON ที่มีโครงสร้างซึ่งสามารถแปลงโดย JavaScript ได้`;
+กฎความปลอดภัยสำคัญ - คุณต้องปฏิบัติตาม:
+❌ ห้ามมีความรุนแรง อาวุธ การตาย การฆาตกรรม
+❌ ห้ามมีเนื้อหาที่น่ากลัวหรือน่าตกใจ
+❌ ห้ามมีเนื้อหาสำหรับผู้ใหญ่ (การหย่าร้าง การพนัน ยาเสพติด แอลกอฮอล์ ฯลฯ)
+❌ ห้ามทำร้ายคนหรือสัตว์
+✅ เฉพาะปริศนาเกี่ยวกับ: ของหาย สัตว์เลี้ยงหาย (ที่พบตัวอย่างปลอดภัย) การเล่นซุกซนที่ไม่เป็นอันตราย ของที่สลับกัน หรือปริศนาโรงเรียนง่ายๆ
+
+ความต้องการด้านภาษา:
+- ใช้คำง่ายๆ ที่เด็ก 7 ขวบอ่านได้เท่านั้น
+- ประโยคสั้น (ไม่เกิน 15 คำ)
+- ทำให้สนุกและร่าเริง ไม่น่ากลัว
+- ใช้แนวคิดที่เป็นรูปธรรม ไม่ใช่นามธรรม
+
+สร้าง:
+1. ปริศนาสนุกๆ พร้อมชื่อเรื่อง สรุปสั้นๆ สถานที่ (โรงเรียน/บ้าน) และเวลา
+2. เบาะแส 4-6 อย่างที่เด็กเข้าใจได้
+3. ผู้ต้องสงสัย 3-4 คน (เด็กคนอื่น ครู หรือผู้ใหญ่ที่เป็นมิตร - ไม่ใช่อาชญากร)
+4. ผู้ต้องสงสัยหนึ่งคนที่ทำ (แต่ไม่ได้มีปัญหา - เพียงแค่ทำผิดพลาดหรือมีเจตนาดี)
+
+หัวข้อที่ดี:
+- สูตรคุกกี้หาย
+- การบ้านหาย
+- กล่องอาหารกลางวันสลับกัน
+- ใครวาดบนกระดานดำ
+- สัตว์เลี้ยงในชั้นเรียนหาย (พบตัวอย่างปลอดภัย)
+- ของเล่นที่ยืมไปไม่ได้คืน
+
+ปริศนาควรแก้ได้โดยเด็ก 7 ขวบด้วยตรรกะง่ายๆ
+ตอบในรูปแบบ JSON ที่มีโครงสร้างซึ่ง JavaScript สามารถแปลงได้`;
 
 // Fallback example case in case of API failures
 const FALLBACK_CASE = {
     case: {
-        title: "The Missing Artifact",
-        description: "A valuable artifact has disappeared from the city museum. You need to investigate the clues and interview the suspects to solve the case.",
-        summary: "Solve the mysterious theft at the city museum.",
-        difficulty: "medium",
-        location: "City Museum",
+        title: "The Missing Backpack",
+        description: "Alex's backpack is missing from the classroom! It has a special dinosaur patch on it. The backpack was on the hook this morning. Now it's gone. Can you help find it?",
+        summary: "Help find Alex's backpack with the dinosaur patch.",
+        difficulty: "easy",
+        location: "Elementary School Classroom",
         dateTime: new Date().toISOString()
     },
     clues: [
         {
-            title: "Security Footage",
-            description: "Security camera was disabled between 1:00 AM and 1:15 AM on the night of the theft.",
-            location: "Security Office",
-            type: "digital",
+            title: "Empty Hook",
+            description: "Alex's hook is empty. The hook next to it has two backpacks on it.",
+            location: "Coat Room",
+            type: "physical",
             relevance: "critical"
         },
         {
-            title: "Footprints",
-            description: "Small footprints found near the display case.",
-            location: "Exhibition Hall",
+            title: "Dinosaur Sticker",
+            description: "A small dinosaur sticker was found on the floor near the hooks.",
+            location: "Coat Room Floor",
             type: "physical",
             relevance: "important"
         },
         {
-            title: "Staff Schedule",
-            description: "List of staff members who were on duty the night of the theft.",
-            location: "Manager's Office",
-            type: "document",
+            title: "Student Note",
+            description: "A note says 'I borrowed a backpack by mistake. I'll bring it back tomorrow!'",
+            location: "Teacher's Desk",
+            type: "physical",
             relevance: "important"
         }
     ],
     suspects: [
         {
-            name: "Security Guard",
-            description: "Night security guard who was on duty",
-            background: "Has worked at the museum for 5 years with a clean record",
-            motive: "Financial troubles recently",
-            alibi: "Claims to have been patrolling the east wing at the time of the theft",
-            isGuilty: false
+            name: "Jamie",
+            description: "A student who also has a blue backpack",
+            background: "Jamie's backpack looks just like Alex's. Jamie loves dinosaurs too.",
+            motive: "Jamie probably took the wrong backpack by mistake. They look the same!",
+            alibi: "Jamie says they grabbed their own backpack. They didn't notice it was the wrong one.",
+            isGuilty: true
         },
         {
-            name: "Curator",
-            description: "Museum curator who has extensive knowledge of the artifact",
-            background: "Respected expert in the field with publications about the artifact",
-            motive: "Recent conflicts with museum management about the artifact's display",
-            alibi: "Claims to have been at home sleeping",
-            isGuilty: true
+            name: "Taylor",
+            description: "A helpful student who organizes the coat room",
+            background: "Taylor helps hang up backpacks that fall down. Taylor is very organized.",
+            motive: "Taylor might have moved the backpack to make more room on the hooks.",
+            alibi: "Taylor says they only hung up backpacks that fell down. They didn't move Alex's backpack.",
+            isGuilty: false
         }
     ],
-    solution: "The curator took the artifact because they believed it wasn't being properly preserved."
+    solution: "Jamie took the wrong backpack by mistake because it looked just like their own backpack. Both backpacks are blue with dinosaur patches!"
 };
 
 /**

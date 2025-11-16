@@ -124,13 +124,13 @@ export default function NewCasePage() {
                     <div className="space-y-4 mb-6">
                         <div>
                             <label className="block text-sm font-medium mb-2">
-                                Theme (optional)
+                                What's Missing? (optional)
                             </label>
                             <input
                                 type="text"
                                 value={theme}
                                 onChange={(e) => setTheme(e.target.value)}
-                                placeholder="e.g., Murder mystery, Heist, Corporate crime"
+                                placeholder="e.g., Cookie recipe, Pet hamster, Lunch box, Homework"
                                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent"
                                 disabled={isGenerating}
                             />
@@ -144,7 +144,7 @@ export default function NewCasePage() {
                                 type="text"
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}
-                                placeholder="e.g., London, Tokyo, a small village"
+                                placeholder="e.g., School, Library, Playground, Classroom"
                                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent"
                                 disabled={isGenerating}
                             />
@@ -152,13 +152,13 @@ export default function NewCasePage() {
 
                         <div>
                             <label className="block text-sm font-medium mb-2">
-                                Era (optional)
+                                Time of Day (optional)
                             </label>
                             <input
                                 type="text"
                                 value={era}
                                 onChange={(e) => setEra(e.target.value)}
-                                placeholder="e.g., Victorian, 1920s, Modern day"
+                                placeholder="e.g., Morning, Lunch time, After school"
                                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent"
                                 disabled={isGenerating}
                             />

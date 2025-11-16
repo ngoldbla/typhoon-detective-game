@@ -118,12 +118,12 @@ export default function SolveCasePage({ params }: SolveCasePageProps) {
 
             // Prepare the prompt for the LLM
             const systemPrompt = language === 'th'
-                ? `คุณเป็นผู้ช่วยสรุปคดีสำหรับเกมสืบสวน ประเมินคำตอบของผู้เล่นและตัดสินว่าถูกต้องหรือไม่โดยเปรียบเทียบกับคำตอบจริง
-คำตอบที่ถูกต้อง: ผู้ร้ายคือ ${caseSuspects.find(s => s.isGuilty)?.name}
-กรุณาตรวจสอบเหตุผลของผู้เล่นและตัดสินว่าถูกต้องหรือไม่ โดยให้คำอธิบายแบบละเอียด`
-                : `You are a case summary assistant for a detective game. Evaluate the player's solution and determine if they are correct by comparing to the actual solution.
-Correct answer: The culprit is ${caseSuspects.find(s => s.isGuilty)?.name}
-Please review the player's reasoning and determine if they are correct, providing a detailed explanation.`;
+                ? `คุณกำลังช่วยเด็ก 7 ขวบเช็คคำตอบในเกมปริศนา ใช้คำง่ายๆ ที่เด็กอ่านได้ ให้กำลังใจและเป็นมิตร
+คำตอบที่ถูก: ${caseSuspects.find(s => s.isGuilty)?.name} ทำ
+ดูคำตอบของเด็กและบอกว่าถูกหรือไม่ บอกด้วยคำง่ายๆ`
+                : `You are helping a 7-year-old child check their answer in a mystery game. Use simple words kids can read. Be encouraging and friendly!
+Correct answer: ${caseSuspects.find(s => s.isGuilty)?.name} did it
+Look at the child's answer and tell them if they're right. Use simple words!`;
 
             const userPrompt = language === 'th'
                 ? `คดี: ${caseData.title}
@@ -255,9 +255,9 @@ Please analyze the player's solution and include this JSON format in your respon
                                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 mb-4">
                                         <FaCheck size={32} />
                                     </div>
-                                    <h2 className="text-2xl font-bold text-green-600 dark:text-green-200">Correct!</h2>
+                                    <h2 className="text-2xl font-bold text-green-600 dark:text-green-200">You Got It Right!</h2>
                                     <p className="text-gray-600 dark:text-gray-400 mt-2">
-                                        You successfully solved the case.
+                                        Great job! You solved the mystery!
                                     </p>
                                 </div>
                             ) : (
@@ -267,7 +267,7 @@ Please analyze the player's solution and include this JSON format in your respon
                                     </div>
                                     <h2 className="text-2xl font-bold text-red-600 dark:text-red-200">Not Quite Right</h2>
                                     <p className="text-gray-600 dark:text-gray-400 mt-2">
-                                        Your conclusion was incorrect.
+                                        That's okay! You can try again or see the answer.
                                     </p>
                                 </div>
                             )}
@@ -276,20 +276,20 @@ Please analyze the player's solution and include this JSON format in your respon
                                 <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4">
                                     <FaMedal className="text-accent mr-3" size={24} />
                                     <div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">The culprit was</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">Who did it:</div>
                                         <div className="font-bold">{actualCulprit?.name}</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <h3 className="font-semibold text-xl mb-3">Case Summary</h3>
+                        <h3 className="font-semibold text-xl mb-3">What Really Happened</h3>
                         <p className="whitespace-pre-wrap mb-6">{solution.narrative}</p>
 
-                        <h3 className="font-semibold text-xl mb-3">Analysis of Your Reasoning</h3>
+                        <h3 className="font-semibold text-xl mb-3">About Your Answer</h3>
                         <p className="whitespace-pre-wrap mb-6">{solution.reasoning}</p>
 
-                        <h3 className="font-semibold text-xl mb-3">Key Evidence</h3>
+                        <h3 className="font-semibold text-xl mb-3">Important Clues</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                             {solution.evidenceIds.map(id => {
                                 const evidence = clues.find(c => c.id === id);
@@ -342,7 +342,7 @@ Please analyze the player's solution and include this JSON format in your respon
                     >
                         <FaArrowLeft />
                     </button>
-                    <h1 className="text-2xl font-bold">Solve the Case</h1>
+                    <h1 className="text-2xl font-bold">Solve the Mystery</h1>
                 </div>
 
                 {!hasEnoughEvidence && (
@@ -351,11 +351,11 @@ Please analyze the player's solution and include this JSON format in your respon
                             <FaExclamationTriangle className="text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3" />
                             <div>
                                 <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-300">
-                                    Insufficient Evidence
+                                    You Might Need More Clues
                                 </h3>
                                 <p className="text-yellow-700 dark:text-yellow-200">
-                                    You haven't examined enough evidence or interviewed all suspects yet.
-                                    This might affect your ability to correctly solve the case.
+                                    You haven't looked at all the clues or talked to everyone yet.
+                                    Finding more clues will help you solve this mystery!
                                 </p>
                             </div>
                         </div>
@@ -366,20 +366,20 @@ Please analyze the player's solution and include this JSON format in your respon
                     <div className="lg:col-span-2 space-y-6">
                         {/* Case summary */}
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-4">Case Summary</h2>
+                            <h2 className="text-xl font-semibold mb-4">About This Mystery</h2>
                             <p className="mb-4">{caseData.summary}</p>
                             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                                <span className="text-gray-600 dark:text-gray-400">Location:</span>
+                                <span className="text-gray-600 dark:text-gray-400">Where:</span>
                                 <span>{caseData.location}</span>
-                                <span className="text-gray-600 dark:text-gray-400">Date/Time:</span>
+                                <span className="text-gray-600 dark:text-gray-400">When:</span>
                                 <span>{new Date(caseData.dateTime).toLocaleString()}</span>
                             </div>
                         </div>
 
                         {/* Select the culprit */}
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-4">Select the Culprit</h2>
-                            <p className="mb-4">Who do you think committed the crime?</p>
+                            <h2 className="text-xl font-semibold mb-4">Who Do You Think Did It?</h2>
+                            <p className="mb-4">Pick the person you think did it:</p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 {caseSuspects.map(suspect => (
@@ -402,8 +402,8 @@ Please analyze the player's solution and include this JSON format in your respon
 
                         {/* Select evidence */}
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-4">Select Evidence</h2>
-                            <p className="mb-4">Select the evidence that supports your conclusion:</p>
+                            <h2 className="text-xl font-semibold mb-4">Pick Your Clues</h2>
+                            <p className="mb-4">Pick the clues that show this person did it:</p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 {availableClues.map(clue => (
@@ -434,14 +434,14 @@ Please analyze the player's solution and include this JSON format in your respon
 
                         {/* Reasoning */}
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-semibold mb-4">Your Reasoning</h2>
-                            <p className="mb-4">Explain why you think your selected suspect is the culprit:</p>
+                            <h2 className="text-xl font-semibold mb-4">Why Do You Think So?</h2>
+                            <p className="mb-4">Tell us why you think this person did it:</p>
 
                             <textarea
                                 value={reasoning}
                                 onChange={(e) => setReasoning(e.target.value)}
                                 className="w-full h-40 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent"
-                                placeholder="Enter your reasoning here. Be specific about how the evidence connects to the suspect."
+                                placeholder="Write why you think this person did it. Tell us how the clues prove it."
                             />
                         </div>
                     </div>
