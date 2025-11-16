@@ -3,6 +3,10 @@ streamlit==1.39.0
 openai==1.54.3
 python-dotenv==1.0.1
 httpx>=0.24.0
+requests>=2.31.0
 
 # Production optimizations
 watchdog==4.0.2
+
+# Audio features
+streamlit-webrtc>=0.47.0
