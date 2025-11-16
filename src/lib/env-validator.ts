@@ -45,7 +45,6 @@ export function validateEnvironment(): EnvValidationResult {
   const model = process.env.OPENAI_MODEL
   if (model) {
     const validModels = [
-      'gpt-5',
       'gpt-4o',
       'gpt-4o-mini',
       'gpt-4-turbo',
@@ -107,7 +106,7 @@ export function getEnvironmentConfig() {
   return {
     apiKey: process.env.OPENAI_API_KEY,
     baseUrl: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
-    model: process.env.OPENAI_MODEL || 'gpt-5',
+    model: process.env.OPENAI_MODEL || 'gpt-4o',
     nodeEnv: process.env.NODE_ENV || 'development',
   }
 }
