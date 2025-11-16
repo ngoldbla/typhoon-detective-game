@@ -1,6 +1,7 @@
 """Case Details Page - Investigation Interface"""
 
 import streamlit as st
+import html
 from lib.clue_analyzer import analyze_clue
 from lib.suspect_analyzer import analyze_suspect, process_interview_question
 from lib.case_solver import analyze_solution
@@ -211,11 +212,15 @@ with st.expander("📖 Case Description", expanded=True):
     elif case.get('imageUrl') and case['imageUrl'] not in ["/case-file.png", ""]:
         st.image(case['imageUrl'], use_container_width=True)
 
+    description_safe = html.escape(case['description'])
+    location_safe = html.escape(case['location'])
+    difficulty_safe = html.escape(case['difficulty'].title())
+
     st.markdown(f"""
     <div class="detective-card">
-        <p style="font-size: 1.1rem;">{case['description']}</p>
-        <p><strong>📍 Location:</strong> {case['location']}</p>
-        <p><strong>⭐ Difficulty:</strong> {case['difficulty'].title()}</p>
+        <p style="font-size: 1.1rem;">{description_safe}</p>
+        <p><strong>📍 Location:</strong> {location_safe}</p>
+        <p><strong>⭐ Difficulty:</strong> {difficulty_safe}</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -331,7 +336,7 @@ with tab1:
 
                                 # Play sound effect
                                 if st.session_state.audio_settings.get('sounds_enabled', True):
-                                    get_sound_effect('clue')
+                                    st.markdown(get_sound_effect('clue'), unsafe_allow_html=True)
 
                                 st.success("✅ Clue analyzed!")
                                 st.rerun()
@@ -439,7 +444,13 @@ with tab2:
 
                     # Voice dictation button
                     if st.session_state.audio_settings.get('dictation_enabled', True):
-                        st.markdown(get_speech_recognition_component(f"voice_{suspect_dict['id']}"), unsafe_allow_html=True)
+                        st.markdown(
+                            get_speech_recognition_component(
+                                f"voice_{suspect_dict['id']}",
+                                placeholder="Type your question:"
+                            ),
+                            unsafe_allow_html=True
+                        )
 
                     question = st.text_input(
                         "Type your question:",
@@ -595,7 +606,7 @@ with tab3:
 
                         # Play celebration sound
                         if st.session_state.audio_settings.get('sounds_enabled', True):
-                            play_celebration_sound()
+                            st.markdown(play_celebration_sound(), unsafe_allow_html=True)
 
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
@@ -617,7 +628,7 @@ with tab3:
                     else:
                         # Play "wrong" sound
                         if st.session_state.audio_settings.get('sounds_enabled', True):
-                            get_sound_effect('error')
+                            st.markdown(get_sound_effect('error'), unsafe_allow_html=True)
 
                         st.markdown("""
                         <div style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);

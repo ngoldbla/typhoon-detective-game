@@ -7,13 +7,16 @@ import streamlit as st
 from typing import Optional
 
 
-def get_tts_component(text: str, button_label: str = "🔊 Listen") -> None:
+def get_tts_component(text: str, button_label: str = "🔊 Listen") -> str:
     """
     Create a text-to-speech button using Web Speech API.
 
     Args:
         text: The text to be read aloud
         button_label: Label for the button
+
+    Returns:
+        HTML string with the TTS button component
     """
     # Escape quotes and newlines for JavaScript
     safe_text = text.replace("'", "\\'").replace('"', '\\"').replace('\n', ' ')
@@ -68,16 +71,19 @@ def get_tts_component(text: str, button_label: str = "🔊 Listen") -> None:
     </script>
     """
 
-    st.markdown(html, unsafe_allow_html=True)
+    return html
 
 
-def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a question...") -> None:
+def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a question...") -> str:
     """
     Create a voice input button using Web Speech Recognition API.
 
     Args:
         input_key: The session state key for the text input to fill
         placeholder: Placeholder text for the input field
+
+    Returns:
+        HTML string with the speech recognition button component
     """
     html = f"""
     <div style="margin: 10px 0;">
@@ -156,15 +162,18 @@ def get_speech_recognition_component(input_key: str, placeholder: str = "Ask a q
     </script>
     """
 
-    st.markdown(html, unsafe_allow_html=True)
+    return html
 
 
-def get_sound_effect(effect_type: str) -> None:
+def get_sound_effect(effect_type: str) -> str:
     """
     Play a sound effect using Web Audio API.
 
     Args:
         effect_type: Type of sound ('clue', 'success', 'error')
+
+    Returns:
+        HTML string with the sound effect script
     """
     if effect_type == 'clue':
         # Pleasant discovery tone
@@ -244,14 +253,18 @@ def get_sound_effect(effect_type: str) -> None:
         </script>
         """
     else:
-        return
+        return ""
 
-    st.markdown(script, unsafe_allow_html=True)
+    return script
 
 
-def play_celebration_sound() -> None:
-    """Play a celebration sound for solving a case"""
-    get_sound_effect('success')
+def play_celebration_sound() -> str:
+    """Play a celebration sound for solving a case
+
+    Returns:
+        HTML string with the celebration sound script
+    """
+    return get_sound_effect('success')
 
 
 def get_audio_settings_ui() -> dict:

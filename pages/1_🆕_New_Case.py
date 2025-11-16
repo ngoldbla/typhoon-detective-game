@@ -1,6 +1,7 @@
 """New Case Generation Page"""
 
 import streamlit as st
+import html
 from lib.case_generator import generate_case
 from lib.types import CaseGenerationParams
 from lib.database import save_case, get_image_data
@@ -249,14 +250,18 @@ if st.session_state.just_generated_case:
     elif case_dict['case'].get('imageUrl') and case_dict['case']['imageUrl'] not in ["/case-file.png", ""]:
         st.image(case_dict['case']['imageUrl'], use_container_width=True, caption="Case Scene")
 
-    # Case details
+    # Case details - escape HTML in dynamic content to prevent injection
+    description_safe = html.escape(case_dict['case']['description'])
+    location_safe = html.escape(case_dict['case']['location'])
+    difficulty_safe = html.escape(case_dict['case']['difficulty'].title())
+
     st.markdown(f"""
     <div class="detective-card">
-        <p style="font-size: 1.1rem; line-height: 1.6;">{case_dict['case']['description']}</p>
+        <p style="font-size: 1.1rem; line-height: 1.6;">{description_safe}</p>
 
         <div style="margin-top: 1rem;">
-            <strong>📍 Location:</strong> {case_dict['case']['location']}<br>
-            <strong>⭐ Difficulty:</strong> {case_dict['case']['difficulty'].title()}<br>
+            <strong>📍 Location:</strong> {location_safe}<br>
+            <strong>⭐ Difficulty:</strong> {difficulty_safe}<br>
             <strong>🧩 Clues to Examine:</strong> {len(case_dict['clues'])}<br>
             <strong>👥 Suspects to Interview:</strong> {len(case_dict['suspects'])}
         </div>
@@ -269,10 +274,12 @@ if st.session_state.just_generated_case:
         cols = st.columns(min(3, len(case_dict['suspects'])))
         for idx, suspect in enumerate(case_dict['suspects'][:3]):
             with cols[idx]:
+                suspect_name_safe = html.escape(suspect['name'])
+                suspect_emoji = suspect.get('emoji', '👤')
                 st.markdown(f"""
                 <div class="detective-card" style="padding: 1rem; text-align: center;">
-                    <div style="font-size: 2rem;">{suspect.get('emoji', '👤')}</div>
-                    <strong>{suspect['name']}</strong>
+                    <div style="font-size: 2rem;">{suspect_emoji}</div>
+                    <strong>{suspect_name_safe}</strong>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -285,10 +292,12 @@ if st.session_state.just_generated_case:
         cols = st.columns(min(3, len(case_dict['clues'])))
         for idx, clue in enumerate(case_dict['clues'][:3]):
             with cols[idx]:
+                clue_title_safe = html.escape(clue['title'])
+                clue_emoji = clue.get('emoji', '🔍')
                 st.markdown(f"""
                 <div class="detective-card" style="padding: 1rem; text-align: center;">
-                    <div style="font-size: 2rem;">{clue.get('emoji', '🔍')}</div>
-                    <strong>{clue['title']}</strong>
+                    <div style="font-size: 2rem;">{clue_emoji}</div>
+                    <strong>{clue_title_safe}</strong>
                 </div>
                 """, unsafe_allow_html=True)
 
